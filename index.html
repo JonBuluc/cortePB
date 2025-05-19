@@ -3,55 +3,124 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Corte Inflables 15/05/25</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      white-space: pre-wrap;
-      background: #fefefe;
-      padding: 2rem;
-      max-width: 600px;
-      margin: auto;
-    }
-    h1 {
-      text-align: center;
-    }
-    .boleto-section {
-      margin-bottom: 1.5rem;
-    }
-    label {
-      display: inline-block;
-      width: 70px;
-      font-weight: bold;
-    }
-    input[type="number"] {
-      width: 70px;
-      margin-right: 0.5rem;
-    }
-    .resultado {
-      margin-top: 0.5rem;
-    }
-    .total-global {
-      font-weight: bold;
-      margin-top: 2rem;
-      border-top: 1px solid #ccc;
-      padding-top: 1rem;
-    }
-  </style>
+  <title>Corte PB</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="main.js"></script>
 </head>
 <body>
-  <h1>Corte Inflables</h1>
-  <p><strong>INFLABLES</strong><br>15/05/25</p>
+  <div class="contenido-izquierda">
+    <div class="titulo">Corte PB</div>
+    <p>
+      <strong>INFLABLES</strong><br>
+      15/05/25<br><br>
 
-  <form id="formCorteInflables">
-    <!-- Secciones de boletos (igual que antes)... -->
-    <!-- ... Copia aquí las secciones del formulario igual que en el mensaje anterior ... -->
+      <em><strong>BOLETO 15 min</strong></em> $40<br>
+      Inicial: <span id="boleto15InicialTexto"></span><br>
+      Final: <span id="boleto15FinalTexto"></span><br>
+      Boletos: <span id="boleto15Boletos">0</span><br>
+      Total: <span id="boleto15Total">$0</span><br><br>
 
-    <!-- Para ahorrar espacio, las secciones de boletos, tarjeta, calcetas, fondo son idénticas -->
-  </form>
+      <em><strong>BOLETO 30 min</strong></em> $70<br>
+      Inicial: <span id="boleto30InicialTexto"></span><br>
+      Final: <span id="boleto30FinalTexto"></span><br>
+      Boletos: <span id="boleto30Boletos">0</span><br>
+      Total: <span id="boleto30Total">$0</span><br><br>
 
-<link rel="stylesheet" href="styles.css" />
-<script defer src="main.js"></script>
+      <em><strong>BOLETO 1HR</strong></em> $120<br>
+      Inicial: <span id="boleto1hInicialTexto"></span><br>
+      Final: <span id="boleto1hFinalTexto"></span><br>
+      Boletos: <span id="boleto1hBoletos">0</span><br>
+      Total: <span id="boleto1hTotal">$0</span><br><br>
 
+      <em><strong>BOLETO ALLDAY</strong></em> $250<br>
+      Inicial: <span id="boletoAlldayInicialTexto"></span><br>
+      Final: <span id="boletoAlldayFinalTexto"></span><br>
+      Boletos: <span id="boletoAlldayBoletos">0</span><br>
+      Total: <span id="boletoAlldayTotal">$0</span><br><br>
+
+      <em><strong>PERSONA EXTRA</strong></em> $40<br>
+      Inicial: <span id="personaExtra40InicialTexto"></span><br>
+      Final: <span id="personaExtra40FinalTexto"></span><br>
+      Venta: <span id="personaExtra40Boletos">0</span><br>
+      Total: <span id="personaExtra40Total">$0</span><br><br>
+
+      <em><strong>PERSONA EXTRA</strong></em> $60<br>
+      Inicial: <span id="personaExtra60InicialTexto"></span><br>
+      Final: <span id="personaExtra60FinalTexto"></span><br>
+      Venta: <span id="personaExtra60Boletos">0</span><br>
+      Total: <span id="personaExtra60Total">$0</span><br><br>
+
+      <strong>Tarjeta</strong><br>
+      Crédito: <span id="tarjetaCreditoTexto">$0</span><br>
+      Débito: <span id="tarjetaDebitoTexto">$0</span><br>
+      Amex: <span id="tarjetaAmexTexto"></span><br>
+      Total: <span id="totalTarjeta">$0</span><br>
+      Efectivo: <span id="efectivoTexto">$0</span><br>
+      Total venta: <span id="totalVenta">$0</span><br>
+      Total de boletos: <span id="totalBoletos">0</span><br>
+      Global: <span id="globalTotal">$0</span><br><br>
+
+      <strong>CALCETAS</strong><br>
+      Iniciamos: <span id="calcetasInicialTexto"></span><br>
+      Terminamos: <span id="calcetasTerminamosTexto"></span><br>
+      Vendidas: <span id="calcetasVendidas">0</span><br>
+      Total: <span id="calcetasTotal">$0</span><br>
+    </p>
+  </div>
+
+  <div class="formulario-derecha">
+    <!-- Formulario para cada sección -->
+    <div class="seccion-formulario form-boleto15">
+      <label>BOLETO 15min</label>
+      <input id="boleto15Inicial" type="number" placeholder="Inicial">
+      <input id="boleto15Final" type="number" placeholder="Final">
+    </div>
+
+    <div class="seccion-formulario form-boleto30">
+      <label>BOLETO 30min</label>
+      <input id="boleto30Inicial" type="number" placeholder="Inicial">
+      <input id="boleto30Final" type="number" placeholder="Final">
+    </div>
+
+    <div class="seccion-formulario form-boleto1h">
+      <label>BOLETO 1HR</label>
+      <input id="boleto1hInicial" type="number" placeholder="Inicial">
+      <input id="boleto1hFinal" type="number" placeholder="Final">
+    </div>
+
+    <div class="seccion-formulario form-boletoAD">
+      <label>BOLETO ALLDAY</label>
+      <input id="boletoAlldayInicial" type="number" placeholder="Inicial">
+      <input id="boletoAlldayFinal" type="number" placeholder="Final">
+    </div>
+
+    <div class="seccion-formulario form-extra40">
+      <label>PERSONA EXTRA $40</label>
+      <input id="personaExtra40Inicial" type="number" placeholder="Inicial">
+      <input id="personaExtra40Final" type="number" placeholder="Final">
+    </div>
+
+    <div class="seccion-formulario form-extra60">
+      <label>PERSONA EXTRA $60</label>
+      <input id="personaExtra60Inicial" type="number" placeholder="Inicial">
+      <input id="personaExtra60Final" type="number" placeholder="Final">
+    </div>
+
+    <div class="seccion-formulario form-tarjeta">
+      <label>TARJETAS</label>
+      <input id="tarjetaCredito" type="number" placeholder="Crédito">
+      <input id="tarjetaDebito" type="number" placeholder="Débito">
+      <input id="tarjetaAmex" type="number" placeholder="Amex">
+    </div>
+
+    <div class="seccion-formulario form-global">
+      <label>EFECTIVO</label>
+      <input id="efectivoTotal" type="number" placeholder="Efectivo">
+
+      <label>CALCETAS</label>
+      <input id="calcetasInicial" type="number" placeholder="Inicial">
+      <input id="calcetasTerminamos" type="number" placeholder="Terminamos">
+    </div>
+  </div>
 </body>
 </html>
