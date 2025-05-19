@@ -103,12 +103,13 @@ const preciosPorTipo = {
     const tarjetaCreditoNum = Number(inputsInflables.tarjetaCredito.value) || 0;
     const tarjetaDebitoNum = Number(inputsInflables.tarjetaDebito.value) || 0;
     const tarjetaAmexNum = Number(inputsInflables.tarjetaAmex.value) || 0;
-    const efectivoNum = Number(inputsInflables.efectivoTotal.value) || 0;
+    const tarjetaTotal = tarjetaCreditoNum + tarjetaAmexNum + tarjetaDebitoNum;
   
-    const totalVenta = tarjetaCreditoNum + tarjetaDebitoNum + tarjetaAmexNum + efectivoNum;
+    const totalVenta = boleto15Total+boleto30Total+boleto1hrTotal+boletoAllDayTotal+personaExtra40Total+personaExtra60Total;
+    const efectivoNum = totalVenta - tarjetaTotal;
     const totalBoletos = boleto15Boletos + boleto30Boletos + boleto1hrBoletos + boletoAllDayBoletos + personaExtra40Boletos + personaExtra60Boletos;
   
-    const globalTotal = totalVenta + calcetasTotal + (Number(inputsInflables.inputFondo.value) || 0);
+    const globalTotal = totalVenta + calcetasTotal;
   
     // Armar texto
     const texto =
