@@ -1,6 +1,7 @@
 // main.js
 
-// Precios fijos para cada tipo de boleto
+// ------------------
+// Datos precios inflables
 const preciosPorTipo = {
     boleto15: 40,
     boleto30: 70,
@@ -8,181 +9,243 @@ const preciosPorTipo = {
     boletoAllDay: 250,
     personaExtra40: 40,
     personaExtra60: 60,
+    calcetas: 35,
   };
   
-  // Inputs
-  const boleto15Inicial = document.getElementById('boleto15Inicial');
-  const boleto15Final = document.getElementById('boleto15Final');
-  const boleto30Inicial = document.getElementById('boleto30Inicial');
-  const boleto30Final = document.getElementById('boleto30Final');
-  const boleto1hrInicial = document.getElementById('boleto1hrInicial');
-  const boleto1hrFinal = document.getElementById('boleto1hrFinal');
-  const boletoAllDayInicial = document.getElementById('boletoAllDayInicial');
-  const boletoAllDayFinal = document.getElementById('boletoAllDayFinal');
-  const personaExtra40Inicial = document.getElementById('personaExtra40Inicial');
-  const personaExtra40Final = document.getElementById('personaExtra40Final');
-  const personaExtra60Inicial = document.getElementById('personaExtra60Inicial');
-  const personaExtra60Final = document.getElementById('personaExtra60Final');
+  // --- Inflables inputs ---
+  const inputsInflables = {
+    boleto15Inicial: document.getElementById('boleto15Inicial'),
+    boleto15Final: document.getElementById('boleto15Final'),
+    boleto30Inicial: document.getElementById('boleto30Inicial'),
+    boleto30Final: document.getElementById('boleto30Final'),
+    boleto1hrInicial: document.getElementById('boleto1hrInicial'),
+    boleto1hrFinal: document.getElementById('boleto1hrFinal'),
+    boletoAllDayInicial: document.getElementById('boletoAllDayInicial'),
+    boletoAllDayFinal: document.getElementById('boletoAllDayFinal'),
+    personaExtra40Inicial: document.getElementById('personaExtra40Inicial'),
+    personaExtra40Final: document.getElementById('personaExtra40Final'),
+    personaExtra60Inicial: document.getElementById('personaExtra60Inicial'),
+    personaExtra60Final: document.getElementById('personaExtra60Final'),
+    tarjetaCredito: document.getElementById('tarjetaCredito'),
+    tarjetaDebito: document.getElementById('tarjetaDebito'),
+    tarjetaAmex: document.getElementById('tarjetaAmex'),
+    efectivoTotal: document.getElementById('efectivoTotal'),
+    calcetasInicial: document.getElementById('calcetasInicial'),
+    calcetasTerminamos: document.getElementById('calcetasTerminamos'),
+    inputFondo: document.getElementById('inputFondo'),
+  };
   
-  const calcetasInicial = document.getElementById('calcetasInicial');
-  const calcetasTerminamos = document.getElementById('calcetasTerminamos');
+  // --- Bicis inputs ---
+  const inputsBicis = {
+    biciFolioInicial: document.getElementById('biciFolioInicial'),
+    biciFolioFinal: document.getElementById('biciFolioFinal'),
+    biciPenalizacion: document.getElementById('biciPenalizacion'),
+    biciTotal: document.getElementById('biciTotal'),
+  };
   
-  const tarjetaCredito = document.getElementById('tarjetaCredito');
-  const tarjetaDebito = document.getElementById('tarjetaDebito');
-  const tarjetaAmex = document.getElementById('tarjetaAmex');
-  const efectivoTotal = document.getElementById('efectivoTotal');
+  // Texto plano contenedores
+  const textoPlanoInflables = document.getElementById('textoPlanoInflables');
+  const textoPlanoBicis = document.getElementById('textoPlanoBicis');
   
-  const inputFondo = document.getElementById('inputFondo');
+  // Botones
+  const btnLimpiarInflables = document.getElementById('btnLimpiarInflables');
+  const btnCopiarInflables = document.getElementById('btnCopiarInflables');
+  const btnLimpiarBicis = document.getElementById('btnLimpiarBicis');
+  const btnCopiarBicis = document.getElementById('btnCopiarBicis');
   
-  const textoPlano = document.getElementById('textoPlano');
+  // Menu botones
+  const btnMostrarInflables = document.getElementById('btnMostrarInflables');
+  const btnMostrarBicis = document.getElementById('btnMostrarBicis');
   
-  const btnLimpiar = document.getElementById('btnLimpiar');
-  const btnCopiar = document.getElementById('btnCopiar');
+  const seccionInflables = document.getElementById('seccionInflables');
+  const seccionBicis = document.getElementById('seccionBicis');
   
-  // Función para calcular boletos y total según inicial y final
-  function calcularBoletosYTotal(inicialString, finalString, precioPorBoleto) {
-    const inicialNum = Number(inicialString);
-    const finalNum = Number(finalString);
-  
-    if (isNaN(inicialNum) || isNaN(finalNum) || finalNum < inicialNum) {
-      return { boletos: 0, total: 0 };
+  // Función para calcular boletos
+  function calcularBoletos(inicial, final) {
+    const inicioNum = Number(inicial);
+    const finalNum = Number(final);
+    if (!isNaN(inicioNum) && !isNaN(finalNum) && finalNum >= inicioNum) {
+      return finalNum - inicioNum + 1;
     }
-  
-    const boletos = finalNum - inicialNum + 1;
-    const total = boletos * precioPorBoleto;
-  
-    return { boletos, total };
+    return 0;
   }
   
-  // Actualizar cálculo calcetas
-  function actualizarCalcetas() {
-    const inicialNum = Number(calcetasInicial.value);
-    const terminamosNum = Number(calcetasTerminamos.value);
+  // Actualizar texto plano inflables
+  function actualizarTextoPlanoInflables() {
+    const fechaHoy = new Date().toLocaleDateString('es-ES');
   
-    if (isNaN(inicialNum) || isNaN(terminamosNum) || terminamosNum > inicialNum) {
-      return { vendidas: 0, total: 0 };
-    }
+    // Calcular boletos y totales
+    const boleto15Boletos = calcularBoletos(inputsInflables.boleto15Inicial.value, inputsInflables.boleto15Final.value);
+    const boleto15Total = boleto15Boletos * preciosPorTipo.boleto15;
   
-    const vendidas = inicialNum - terminamosNum;
-    const total = vendidas * 35; // precio fijo calcetas
+    const boleto30Boletos = calcularBoletos(inputsInflables.boleto30Inicial.value, inputsInflables.boleto30Final.value);
+    const boleto30Total = boleto30Boletos * preciosPorTipo.boleto30;
   
-    return { vendidas, total };
-  }
+    const boleto1hrBoletos = calcularBoletos(inputsInflables.boleto1hrInicial.value, inputsInflables.boleto1hrFinal.value);
+    const boleto1hrTotal = boleto1hrBoletos * preciosPorTipo.boleto1hr;
   
-  // Generar texto plano para copiar o mostrar
-  function generarTextoPlano() {
-    const boleto15Calc = calcularBoletosYTotal(boleto15Inicial.value, boleto15Final.value, preciosPorTipo.boleto15);
-    const boleto30Calc = calcularBoletosYTotal(boleto30Inicial.value, boleto30Final.value, preciosPorTipo.boleto30);
-    const boleto1hrCalc = calcularBoletosYTotal(boleto1hrInicial.value, boleto1hrFinal.value, preciosPorTipo.boleto1hr);
-    const boletoAllDayCalc = calcularBoletosYTotal(boletoAllDayInicial.value, boletoAllDayFinal.value, preciosPorTipo.boletoAllDay);
-    const personaExtra40Calc = calcularBoletosYTotal(personaExtra40Inicial.value, personaExtra40Final.value, preciosPorTipo.personaExtra40);
-    const personaExtra60Calc = calcularBoletosYTotal(personaExtra60Inicial.value, personaExtra60Final.value, preciosPorTipo.personaExtra60);
+    const boletoAllDayBoletos = calcularBoletos(inputsInflables.boletoAllDayInicial.value, inputsInflables.boletoAllDayFinal.value);
+    const boletoAllDayTotal = boletoAllDayBoletos * preciosPorTipo.boletoAllDay;
   
-    const calcetasCalc = actualizarCalcetas();
+    const personaExtra40Boletos = calcularBoletos(inputsInflables.personaExtra40Inicial.value, inputsInflables.personaExtra40Final.value);
+    const personaExtra40Total = personaExtra40Boletos * preciosPorTipo.personaExtra40;
   
-    const creditoNum = Number(tarjetaCredito.value) || 0;
-    const debitoNum = Number(tarjetaDebito.value) || 0;
-    const amexNum = Number(tarjetaAmex.value) || 0;
-    const efectivoNum = Number(efectivoTotal.value) || 0;
+    const personaExtra60Boletos = calcularBoletos(inputsInflables.personaExtra60Inicial.value, inputsInflables.personaExtra60Final.value);
+    const personaExtra60Total = personaExtra60Boletos * preciosPorTipo.personaExtra60;
   
-    const totalTarjeta = creditoNum + debitoNum + amexNum;
-    const totalVenta = totalTarjeta + efectivoNum;
-    const totalBoletos = boleto15Calc.boletos + boleto30Calc.boletos + boleto1hrCalc.boletos + boletoAllDayCalc.boletos + personaExtra40Calc.boletos + personaExtra60Calc.boletos;
-    const global = totalVenta + calcetasCalc.total;
+    // Calcetas
+    const calcetasInicialNum = Number(inputsInflables.calcetasInicial.value);
+    const calcetasTerminamosNum = Number(inputsInflables.calcetasTerminamos.value);
+    const calcetasVendidas = (!isNaN(calcetasInicialNum) && !isNaN(calcetasTerminamosNum)) ? calcetasInicialNum - calcetasTerminamosNum : 0;
+    const calcetasTotal = calcetasVendidas * preciosPorTipo.calcetas;
   
-    const fecha = "15/05/25";
+    // Totales tarjetas y efectivo
+    const tarjetaCreditoNum = Number(inputsInflables.tarjetaCredito.value) || 0;
+    const tarjetaDebitoNum = Number(inputsInflables.tarjetaDebito.value) || 0;
+    const tarjetaAmexNum = Number(inputsInflables.tarjetaAmex.value) || 0;
+    const efectivoNum = Number(inputsInflables.efectivoTotal.value) || 0;
   
-    return `
-  *INFLABLES*
-  ${fecha}
+    const totalVenta = tarjetaCreditoNum + tarjetaDebitoNum + tarjetaAmexNum + efectivoNum;
+    const totalBoletos = boleto15Boletos + boleto30Boletos + boleto1hrBoletos + boletoAllDayBoletos + personaExtra40Boletos + personaExtra60Boletos;
+  
+    const globalTotal = totalVenta + calcetasTotal + (Number(inputsInflables.inputFondo.value) || 0);
+  
+    // Armar texto
+    const texto =
+  `*INFLABLES*
+  ${fechaHoy}
   
   *BOLETO 15 min* $40
-  Inicial: ${boleto15Inicial.value || "---"}
-  Final: ${boleto15Final.value || "---"}
-  Boletos: ${boleto15Calc.boletos}
-  Total: $${boleto15Calc.total}
+  Inicial: ${inputsInflables.boleto15Inicial.value || '---'}
+  Final: ${inputsInflables.boleto15Final.value || '---'}
+  Boletos: ${boleto15Boletos || '0'}
+  Total: $${boleto15Total || '0'}
   
   *BOLETO 30 MIN* $70
-  Inicial: ${boleto30Inicial.value || "---"}
-  Final: ${boleto30Final.value || "---"}
-  Boletos: ${boleto30Calc.boletos}
-  Total: $${boleto30Calc.total}
+  Inicial: ${inputsInflables.boleto30Inicial.value || '---'}
+  Final: ${inputsInflables.boleto30Final.value || '---'}
+  Boletos: ${boleto30Boletos || '0'}
+  Total: $${boleto30Total || '0'}
   
   *BOLETO 1HR* $120
-  Inicial: ${boleto1hrInicial.value || "---"}
-  Final: ${boleto1hrFinal.value || "---"}
-  Boletos: ${boleto1hrCalc.boletos}
-  Total: $${boleto1hrCalc.total}
+  Inicial: ${inputsInflables.boleto1hrInicial.value || '---'}
+  Final: ${inputsInflables.boleto1hrFinal.value || '---'}
+  Boletos: ${boleto1hrBoletos || '0'}
+  Total: $${boleto1hrTotal || '0'}
   
   *BOLETO ALLDAY* $250
-  Inicial: ${boletoAllDayInicial.value || "---"}
-  Final: ${boletoAllDayFinal.value || "---"}
-  Boletos: ${boletoAllDayCalc.boletos}
-  Total: $${boletoAllDayCalc.total}
+  Inicial: ${inputsInflables.boletoAllDayInicial.value || '---'}
+  Final: ${inputsInflables.boletoAllDayFinal.value || '---'}
+  Boletos: ${boletoAllDayBoletos || '0'}
+  Total: $${boletoAllDayTotal || '0'}
   
   *PERSONA EXTRA* $40
-  Inicial: ${personaExtra40Inicial.value || "---"}
-  Final: ${personaExtra40Final.value || "---"}
-  Venta: ${personaExtra40Calc.boletos}
-  Total: $${personaExtra40Calc.total}
+  Inicial: ${inputsInflables.personaExtra40Inicial.value || '---'}
+  Final: ${inputsInflables.personaExtra40Final.value || '---'}
+  Boletos: ${personaExtra40Boletos || '0'}
+  Total: $${personaExtra40Total || '0'}
   
   *PERSONA EXTRA* $60
-  Inicial: ${personaExtra60Inicial.value || "---"}
-  Final: ${personaExtra60Final.value || "---"}
-  Venta: ${personaExtra60Calc.boletos}
-  Total: $${personaExtra60Calc.total}
+  Inicial: ${inputsInflables.personaExtra60Inicial.value || '---'}
+  Final: ${inputsInflables.personaExtra60Final.value || '---'}
+  Boletos: ${personaExtra60Boletos || '0'}
+  Total: $${personaExtra60Total || '0'}
   
   *Tarjeta*
-  Crédito: $${creditoNum}
-  Débito: $${debitoNum}
-  Amex: $${amexNum}
-  Total: $${totalTarjeta}
+  Crédito: $${tarjetaCreditoNum}
+  Débito: $${tarjetaDebitoNum}
+  Amex: $${tarjetaAmexNum}
+  Total: $${tarjetaCreditoNum + tarjetaDebitoNum + tarjetaAmexNum}
   Efectivo: $${efectivoNum}
   Total venta: $${totalVenta}
   Total de boletos: ${totalBoletos}
-  Global: $${global}
+  Global: $${globalTotal}
   
   *CALCETAS*
-  Iniciamos: ${calcetasInicial.value || "---"}
-  Terminamos: ${calcetasTerminamos.value || "---"}
-  Vendidas: ${calcetasCalc.vendidas}
-  Total: $${calcetasCalc.total}
+  Iniciamos: ${inputsInflables.calcetasInicial.value || '---'}
+  Terminamos: ${inputsInflables.calcetasTerminamos.value || '---'}
+  Vendidas: ${calcetasVendidas || '0'}
+  Total: $${calcetasTotal || '0'}
   
-  *Fondo:* $${inputFondo.value || 0}
-  `.trim();
+  *Fondo:* $${inputsInflables.inputFondo.value || '0'}
+  `;
+    textoPlanoInflables.textContent = texto;
   }
   
-  // Actualizar texto plano en la izquierda
-  function actualizarTextoPlano() {
-    textoPlano.textContent = generarTextoPlano();
+  // Actualizar texto plano bicis
+  function actualizarTextoPlanoBicis() {
+    const biciFolioInicialNum = inputsBicis.biciFolioInicial.value || '---';
+    const biciFolioFinalNum = inputsBicis.biciFolioFinal.value || '---';
+    const biciPenalizacionNum = inputsBicis.biciPenalizacion.value || '0';
+    const biciTotalNum = inputsBicis.biciTotal.value || '0';
+  
+    const texto =
+  `*Bi-Bikes*
+  18/05/25
+  Folio inicial: ${biciFolioInicialNum}
+  Folio final: ${biciFolioFinalNum}
+  Penalización: ${biciPenalizacionNum}
+  Total bicis: ${biciTotalNum}
+  `;
+    textoPlanoBicis.textContent = texto;
   }
   
-  // Limpiar inputs
-  function limpiarDatos() {
-    const todosInputs = document.querySelectorAll('input[type="number"]');
-    todosInputs.forEach(input => (input.value = ''));
-    actualizarTextoPlano();
+  // Limpiar inputs inflables
+  function limpiarInflables() {
+    Object.values(inputsInflables).forEach(input => (input.value = ''));
+    actualizarTextoPlanoInflables();
   }
   
-  // Copiar al portapapeles
-  async function copiarPortapapeles() {
-    try {
-      await navigator.clipboard.writeText(textoPlano.textContent);
-      alert('Copiado al portapapeles!');
-    } catch {
-      alert('Error al copiar al portapapeles.');
-    }
+  // Limpiar inputs bicis
+  function limpiarBicis() {
+    Object.values(inputsBicis).forEach(input => (input.value = ''));
+    actualizarTextoPlanoBicis();
   }
   
-  // Eventos para actualizar texto plano al cambiar inputs
-  const inputsParaActualizar = document.querySelectorAll('input[type="number"]');
-  inputsParaActualizar.forEach(input =>
-    input.addEventListener('input', actualizarTextoPlano)
-  );
+  // Copiar texto a portapapeles
+  function copiarTextoPlano(texto) {
+    navigator.clipboard.writeText(texto).then(() => {
+      alert('Texto copiado al portapapeles');
+    });
+  }
   
-  btnLimpiar.addEventListener('click', limpiarDatos);
-  btnCopiar.addEventListener('click', copiarPortapapeles);
+  // Manejo eventos inputs inflables
+  Object.values(inputsInflables).forEach(input => {
+    input.addEventListener('input', actualizarTextoPlanoInflables);
+  });
   
-  // Inicializa la vista
-  actualizarTextoPlano();
+  // Manejo eventos inputs bicis
+  Object.values(inputsBicis).forEach(input => {
+    input.addEventListener('input', actualizarTextoPlanoBicis);
+  });
   
+  // Botones limpiar y copiar inflables
+  btnLimpiarInflables.addEventListener('click', limpiarInflables);
+  btnCopiarInflables.addEventListener('click', () => copiarTextoPlano(textoPlanoInflables.textContent));
+  
+  // Botones limpiar y copiar bicis
+  btnLimpiarBicis.addEventListener('click', limpiarBicis);
+  btnCopiarBicis.addEventListener('click', () => copiarTextoPlano(textoPlanoBicis.textContent));
+  
+  // Menu para cambiar de sección
+  btnMostrarInflables.addEventListener('click', () => {
+    btnMostrarInflables.classList.add('active');
+    btnMostrarBicis.classList.remove('active');
+    seccionInflables.classList.add('seccionActiva');
+    seccionInflables.classList.remove('seccionOculta');
+    seccionBicis.classList.remove('seccionActiva');
+    seccionBicis.classList.add('seccionOculta');
+  });
+  
+  btnMostrarBicis.addEventListener('click', () => {
+    btnMostrarBicis.classList.add('active');
+    btnMostrarInflables.classList.remove('active');
+    seccionBicis.classList.add('seccionActiva');
+    seccionBicis.classList.remove('seccionOculta');
+    seccionInflables.classList.remove('seccionActiva');
+    seccionInflables.classList.add('seccionOculta');
+  });
+  
+  // Inicializar textos planos
+  actualizarTextoPlanoInflables();
+  actualizarTextoPlanoBicis();
