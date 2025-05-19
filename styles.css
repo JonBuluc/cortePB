@@ -98,16 +98,17 @@ form {
 
 .grupo-inputs label {
   font-weight: bold;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.3rem;
   font-size: 0.9rem;
 }
 
 .grupo-inputs input[type="number"] {
   padding: 0.3rem;
-  border-radius: 4px;
+  border-radius: 5px;
   border: none;
   background: #555;
   color: white;
+  margin-bottom: 0.3rem;
 }
 
 .grupo-inputs.fondo {
@@ -115,7 +116,7 @@ form {
   padding: 0.7rem;
   border-radius: 6px;
   color: white;
-  min-width: 100%;
+  min-width: 95%;
 }
 
 .boleto15 label { color: #ff6f61; }
@@ -124,6 +125,8 @@ form {
 .boletoAllDay label { color: #4caf50; }
 .personaExtra40 label { color: #29b6f6; }
 .personaExtra60 label { color: #ab47bc; }
+.tarjeta label {color: #096792}
+.calcetas label {color: #a36411}
 
 .botones {
   width: 100%;

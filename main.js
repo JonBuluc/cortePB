@@ -1,19 +1,4 @@
-// main.js
-
-// ------------------
-// Datos precios inflables
-const preciosPorTipo = {
-    boleto15: 40,
-    boleto30: 70,
-    boleto1hr: 120,
-    boletoAllDay: 250,
-    personaExtra40: 40,
-    personaExtra60: 60,
-    calcetas: 35,
-  };
-  
-  // --- Inflables inputs ---
-  const inputsInflables = {
+const inputsInflables = {
     boleto15Inicial: document.getElementById('boleto15Inicial'),
     boleto15Final: document.getElementById('boleto15Final'),
     boleto30Inicial: document.getElementById('boleto30Inicial'),
@@ -26,55 +11,61 @@ const preciosPorTipo = {
     personaExtra40Final: document.getElementById('personaExtra40Final'),
     personaExtra60Inicial: document.getElementById('personaExtra60Inicial'),
     personaExtra60Final: document.getElementById('personaExtra60Final'),
-    tarjetaCredito: document.getElementById('tarjetaCredito'),
-    tarjetaDebito: document.getElementById('tarjetaDebito'),
-    tarjetaAmex: document.getElementById('tarjetaAmex'),
-    efectivoTotal: document.getElementById('efectivoTotal'),
     calcetasInicial: document.getElementById('calcetasInicial'),
     calcetasTerminamos: document.getElementById('calcetasTerminamos'),
     inputFondo: document.getElementById('inputFondo'),
+    tarjetaCredito: document.getElementById('tarjetaCredito'),
+    tarjetaDebito: document.getElementById('tarjetaDebito'),
+    tarjetaAmex: document.getElementById('tarjetaAmex'),
   };
   
-  // --- Bicis inputs ---
   const inputsBicis = {
     biciFolioInicial: document.getElementById('biciFolioInicial'),
     biciFolioFinal: document.getElementById('biciFolioFinal'),
     biciPenalizacion: document.getElementById('biciPenalizacion'),
-    biciTotal: document.getElementById('biciTotal'),
   };
   
-  // Texto plano contenedores
-  const textoPlanoInflables = document.getElementById('textoPlanoInflables');
-  const textoPlanoBicis = document.getElementById('textoPlanoBicis');
-  
-  // Botones
   const btnLimpiarInflables = document.getElementById('btnLimpiarInflables');
   const btnCopiarInflables = document.getElementById('btnCopiarInflables');
   const btnLimpiarBicis = document.getElementById('btnLimpiarBicis');
   const btnCopiarBicis = document.getElementById('btnCopiarBicis');
   
-  // Menu botones
   const btnMostrarInflables = document.getElementById('btnMostrarInflables');
   const btnMostrarBicis = document.getElementById('btnMostrarBicis');
   
   const seccionInflables = document.getElementById('seccionInflables');
   const seccionBicis = document.getElementById('seccionBicis');
   
-  // Función para calcular boletos
+  const textoPlanoInflables = document.getElementById('textoPlanoInflables');
+  const textoPlanoBicis = document.getElementById('textoPlanoBicis');
+  
+  const preciosPorTipo = {
+    boleto15: 40,
+    boleto30: 70,
+    boleto1hr: 120,
+    boletoAllDay: 250,
+    personaExtra40: 40,
+    personaExtra60: 60,
+    calcetas: 35,
+  };
+  
   function calcularBoletos(inicial, final) {
     const inicioNum = Number(inicial);
     const finalNum = Number(final);
-    if (!isNaN(inicioNum) && !isNaN(finalNum) && finalNum >= inicioNum) {
-      return finalNum - inicioNum + 1;
+    if (
+      !inicial || !final || // si alguno está vacío
+      isNaN(inicioNum) || isNaN(finalNum) || // o no es número
+      finalNum < inicioNum // o final menor que inicial
+    ) {
+      return 0;
     }
-    return 0;
+    return finalNum - inicioNum + 1;
   }
   
-  // Actualizar texto plano inflables
+  
   function actualizarTextoPlanoInflables() {
     const fechaHoy = new Date().toLocaleDateString('es-ES');
   
-    // Calcular boletos y totales
     const boleto15Boletos = calcularBoletos(inputsInflables.boleto15Inicial.value, inputsInflables.boleto15Final.value);
     const boleto15Total = boleto15Boletos * preciosPorTipo.boleto15;
   
@@ -93,25 +84,31 @@ const preciosPorTipo = {
     const personaExtra60Boletos = calcularBoletos(inputsInflables.personaExtra60Inicial.value, inputsInflables.personaExtra60Final.value);
     const personaExtra60Total = personaExtra60Boletos * preciosPorTipo.personaExtra60;
   
-    // Calcetas
     const calcetasInicialNum = Number(inputsInflables.calcetasInicial.value);
     const calcetasTerminamosNum = Number(inputsInflables.calcetasTerminamos.value);
     const calcetasVendidas = (!isNaN(calcetasInicialNum) && !isNaN(calcetasTerminamosNum)) ? calcetasInicialNum - calcetasTerminamosNum : 0;
     const calcetasTotal = calcetasVendidas * preciosPorTipo.calcetas;
   
-    // Totales tarjetas y efectivo
     const tarjetaCreditoNum = Number(inputsInflables.tarjetaCredito.value) || 0;
     const tarjetaDebitoNum = Number(inputsInflables.tarjetaDebito.value) || 0;
     const tarjetaAmexNum = Number(inputsInflables.tarjetaAmex.value) || 0;
   
-    const totalVenta = boleto15Total+boleto30Total+boleto1hrTotal+boletoAllDayTotal+personaExtra40Total+personaExtra60Total;
-    const efectivoNum = totalVenta - (tarjetaCreditoNum + tarjetaAmexNum + tarjetaDebitoNum);
-    const totalBoletos = boleto15Boletos + boleto30Boletos + boleto1hrBoletos + boletoAllDayBoletos + personaExtra40Boletos + personaExtra60Boletos;
+    // Total ventas es suma de boletos + calcetas + acompañantes
+    const totalVentas =
+      boleto15Total +
+      boleto30Total +
+      boleto1hrTotal +
+      boletoAllDayTotal +
+      personaExtra40Total +
+      personaExtra60Total +
+      calcetasTotal;
   
-    const globalTotal = totalVenta + calcetasTotal;
+    const efectivoCalculado = totalVentas - (tarjetaCreditoNum + tarjetaDebitoNum + tarjetaAmexNum);
   
-    // Armar texto
-    const texto =
+    // Global no incluye fondo
+    const globalTotal = totalVentas;
+  
+    const texto = 
   `*INFLABLES*
   ${fechaHoy}
   
@@ -156,10 +153,12 @@ const preciosPorTipo = {
   Débito: $${tarjetaDebitoNum}
   Amex: $${tarjetaAmexNum}
   Total: $${tarjetaCreditoNum + tarjetaDebitoNum + tarjetaAmexNum}
-  Efectivo: $${efectivoNum}
-  Total venta: $${totalVenta}
-  Total de boletos: ${totalBoletos}
-  Global: $${globalTotal}
+  *Efectivo:* $${efectivoCalculado}
+  
+  *Total venta:* $${totalVentas}
+  *Total de boletos:* ${boleto15Boletos + boleto30Boletos + boleto1hrBoletos + boletoAllDayBoletos + personaExtra40Boletos + personaExtra60Boletos}
+  
+  *Global:* $${globalTotal}
   
   *CALCETAS*
   Iniciamos: ${inputsInflables.calcetasInicial.value || '---'}
@@ -169,65 +168,62 @@ const preciosPorTipo = {
   
   *Fondo:* $${inputsInflables.inputFondo.value || '0'}
   `;
+  
     textoPlanoInflables.textContent = texto;
   }
   
-  // Actualizar texto plano bicis
   function actualizarTextoPlanoBicis() {
-    const biciFolioInicialNum = inputsBicis.biciFolioInicial.value || '---';
-    const biciFolioFinalNum = inputsBicis.biciFolioFinal.value || '---';
-    const biciPenalizacionNum = inputsBicis.biciPenalizacion.value || '0';
-    const biciTotalNum = inputsBicis.biciTotal.value || '0';
+    const fechaHoy = new Date().toLocaleDateString('es-ES');
+    const biciFolioInicialNum = Number(inputsBicis.biciFolioInicial.value);
+    const biciFolioFinalNum = Number(inputsBicis.biciFolioFinal.value);
+    const biciPenalizacionNum = Number(inputsBicis.biciPenalizacion.value) || 0;
   
-    const texto =
+    let totalBicis = 0;
+    if (!isNaN(biciFolioInicialNum) && !isNaN(biciFolioFinalNum) && biciFolioFinalNum >= biciFolioInicialNum) {
+      totalBicis = biciFolioFinalNum - biciFolioInicialNum + 1;
+    }
+  
+    const texto = 
   `*Bi-Bikes*
-  18/05/25
-  Folio inicial: ${biciFolioInicialNum}
-  Folio final: ${biciFolioFinalNum}
+  ${fechaHoy}
+  Folio inicial: ${inputsBicis.biciFolioInicial.value || '---'}
+  Folio final: ${inputsBicis.biciFolioFinal.value || '---'}
   Penalización: ${biciPenalizacionNum}
-  Total bicis: ${biciTotalNum}
+  Total bicis: ${totalBicis}
   `;
     textoPlanoBicis.textContent = texto;
   }
   
-  // Limpiar inputs inflables
   function limpiarInflables() {
     Object.values(inputsInflables).forEach(input => (input.value = ''));
     actualizarTextoPlanoInflables();
   }
   
-  // Limpiar inputs bicis
   function limpiarBicis() {
     Object.values(inputsBicis).forEach(input => (input.value = ''));
     actualizarTextoPlanoBicis();
   }
   
-  // Copiar texto a portapapeles
   function copiarTextoPlano(texto) {
     navigator.clipboard.writeText(texto).then(() => {
       alert('Texto copiado al portapapeles');
     });
   }
   
-  // Manejo eventos inputs inflables
   Object.values(inputsInflables).forEach(input => {
     input.addEventListener('input', actualizarTextoPlanoInflables);
   });
   
-  // Manejo eventos inputs bicis
   Object.values(inputsBicis).forEach(input => {
     input.addEventListener('input', actualizarTextoPlanoBicis);
   });
   
-  // Botones limpiar y copiar inflables
   btnLimpiarInflables.addEventListener('click', limpiarInflables);
   btnCopiarInflables.addEventListener('click', () => copiarTextoPlano(textoPlanoInflables.textContent));
   
-  // Botones limpiar y copiar bicis
   btnLimpiarBicis.addEventListener('click', limpiarBicis);
   btnCopiarBicis.addEventListener('click', () => copiarTextoPlano(textoPlanoBicis.textContent));
   
-  // Menu para cambiar de sección
   btnMostrarInflables.addEventListener('click', () => {
     btnMostrarInflables.classList.add('active');
     btnMostrarBicis.classList.remove('active');
@@ -249,3 +245,4 @@ const preciosPorTipo = {
   // Inicializar textos planos
   actualizarTextoPlanoInflables();
   actualizarTextoPlanoBicis();
+  
