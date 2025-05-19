@@ -1,79 +1,57 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Corte PB 15/05/25</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>Corte Inflables 15/05/25</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      white-space: pre-wrap;
+      background: #fefefe;
+      padding: 2rem;
+      max-width: 600px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+    }
+    .boleto-section {
+      margin-bottom: 1.5rem;
+    }
+    label {
+      display: inline-block;
+      width: 70px;
+      font-weight: bold;
+    }
+    input[type="number"] {
+      width: 70px;
+      margin-right: 0.5rem;
+    }
+    .resultado {
+      margin-top: 0.5rem;
+    }
+    .total-global {
+      font-weight: bold;
+      margin-top: 2rem;
+      border-top: 1px solid #ccc;
+      padding-top: 1rem;
+    }
+  </style>
 </head>
 <body>
-  <div class="contenido-izquierda">
-    <div class="titulo">Corte PB</div>
-    <p>
-INFLABLES
-15/05/25
+  <h1>Corte Inflables</h1>
+  <p><strong>INFLABLES</strong><br>15/05/25</p>
 
-BOLETO 15 min $40
-Inicial: <span id="boleto15InicialTexto">13247</span>
-Final: <span id="boleto15FinalTexto">13284</span>
-Boletos: <span id="boleto15Boletos">38</span>
-Total: <span id="boleto15Total">$1520</span>
+  <form id="formCorteInflables">
+    <!-- Secciones de boletos (igual que antes)... -->
+    <!-- ... Copia aquí las secciones del formulario igual que en el mensaje anterior ... -->
 
-BOLETO 30 MIN $70
-Inicial: <span id="boleto30InicialTexto">17396</span>
-Final: <span id="boleto30FinalTexto">17428</span>
-Boletos: <span id="boleto30Boletos">33</span>
-Total: <span id="boleto30Total">$2310</span>
-
-BOLETO 1HR $120
-Inicial: <span id="boleto1hInicialTexto">4003</span>
-Final: <span id="boleto1hFinalTexto">4004</span>
-Boletos: <span id="boleto1hBoletos">2</span>
-Total: <span id="boleto1hTotal">$240</span>
-
-BOLETO ALLDAY $250
-Inicial: <span id="boletoAlldayInicialTexto">134</span>
-Final: <span id="boletoAlldayFinalTexto"></span>
-Boletos: <span id="boletoAlldayBoletos">0</span>
-Total: <span id="boletoAlldayTotal">$0</span>
-
-PERSONA EXTRA $40
-Inicial: <span id="personaExtra40InicialTexto">1475</span>
-Final: <span id="personaExtra40FinalTexto"></span>
-Boletos: <span id="personaExtra40Boletos">0</span>
-Total: <span id="personaExtra40Total">$0</span>
-
-PERSONA EXTRA $60
-Inicial: <span id="personaExtra60InicialTexto">32</span>
-Final: <span id="personaExtra60FinalTexto"></span>
-Boletos: <span id="personaExtra60Boletos">0</span>
-Total: <span id="personaExtra60Total">$0</span>
-
-Tarjeta
-Crédito: <span id="tarjetaCreditoTexto">$210</span>
-Débito: <span id="tarjetaDebitoTexto">$1065</span>
-Amex: <span id="tarjetaAmexTexto"></span>
-Total: <span id="totalTarjeta">$1275</span>
-Efectivo: <span id="efectivoTexto">$2795</span>
-Total venta: <span id="totalVentaTexto">$4070</span>
-Total de boletos: <span id="totalBoletosTexto">73</span>
-Global: <span id="globalTotalTexto">$6135</span>
-
-CALCETAS
-Iniciamos: <span id="calcetasInicialTexto">424</span>
-Terminamos: <span id="calcetasTerminamosTexto">364</span>
-Vendidas: <span id="calcetasVendidas">59</span>
-Total: <span id="calcetasTotal">$2065</span>
-
-Fondo: $2703
-    </p>
-  </div>
-
-  <form class="formulario-derecha" id="formCorteInflables">
-    <!-- formulario aquí (omitido por brevedad) -->
+    <!-- Para ahorrar espacio, las secciones de boletos, tarjeta, calcetas, fondo son idénticas -->
   </form>
 
-  <script src="main.js"></script>
+<link rel="stylesheet" href="styles.css" />
+<script defer src="main.js"></script>
+
 </body>
 </html>
