@@ -60,8 +60,8 @@ const inputsInflables = {
       return 0;
     }
     return finalNum - inicioNum + 1;
-  }
-  
+  } 
+
   
   function actualizarTextoPlanoInflables() {
     const fechaHoy = new Date().toLocaleDateString('es-ES');
@@ -178,10 +178,7 @@ const inputsInflables = {
     const biciFolioFinalNum = Number(inputsBicis.biciFolioFinal.value);
     const biciPenalizacionNum = Number(inputsBicis.biciPenalizacion.value) || 0;
   
-    let totalBicis = 0;
-    if (!isNaN(biciFolioInicialNum) && !isNaN(biciFolioFinalNum) && biciFolioFinalNum >= biciFolioInicialNum) {
-      totalBicis = biciFolioFinalNum - biciFolioInicialNum + 1;
-    }
+    const totalBicis = calcularBoletos(biciFolioInicialNum, biciFolioFinalNum);    
   
     const texto = 
   `*Bi-Bikes*
