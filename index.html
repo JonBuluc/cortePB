@@ -9,89 +9,130 @@
 <body>
   <header>
     <h1>Corte PB</h1>
-    <div id="inputFondoContainer">
-      <label for="inputFondo"><strong>Fondo: $</strong></label>
-      <input type="number" id="inputFondo" min="0" value="0" />
-    </div>
+    <nav>
+      <button id="btnMostrarInflables" class="active">Inflables</button>
+      <button id="btnMostrarBicis">Bicis</button>
+    </nav>
   </header>
 
   <main>
-    <section id="izquierda">
-      <article id="textoPlano" class="texto-plano"></article>
+    <!-- Inflables -->
+    <section id="seccionInflables" class="seccionActiva">
+      <div class="contenido">
+        <div class="texto-plano" id="textoPlanoInflables" aria-label="Resumen inflables"></div>
 
-      <form id="formularios">
-        <!-- Inflables -->
-        <div class="tipo-boleto boleto15">
-          <h3>BOLETO 15 min $40</h3>
-          <label>Inicial: <input type="number" id="boleto15Inicial" min="0" /></label>
-          <label>Final: <input type="number" id="boleto15Final" min="0" /></label>
-        </div>
+        <form id="formInflables">
+          <!-- Boletos -->
+          <div class="grupo-inputs boleto boleto15">
+            <label>BOLETO 15 min $40</label>
+            <input type="number" id="boleto15Inicial" placeholder="Inicial" min="0" />
+            <input type="number" id="boleto15Final" placeholder="Final" min="0" />
+          </div>
 
-        <div class="tipo-boleto boleto30">
-          <h3>BOLETO 30 MIN $70</h3>
-          <label>Inicial: <input type="number" id="boleto30Inicial" min="0" /></label>
-          <label>Final: <input type="number" id="boleto30Final" min="0" /></label>
-        </div>
+          <div class="grupo-inputs boleto boleto30">
+            <label>BOLETO 30 min $70</label>
+            <input type="number" id="boleto30Inicial" placeholder="Inicial" min="0" />
+            <input type="number" id="boleto30Final" placeholder="Final" min="0" />
+          </div>
 
-        <div class="tipo-boleto boleto1hr">
-          <h3>BOLETO 1HR $120</h3>
-          <label>Inicial: <input type="number" id="boleto1hrInicial" min="0" /></label>
-          <label>Final: <input type="number" id="boleto1hrFinal" min="0" /></label>
-        </div>
+          <div class="grupo-inputs boleto boleto1hr">
+            <label>BOLETO 1HR $120</label>
+            <input type="number" id="boleto1hrInicial" placeholder="Inicial" min="0" />
+            <input type="number" id="boleto1hrFinal" placeholder="Final" min="0" />
+          </div>
 
-        <div class="tipo-boleto boletoAllDay">
-          <h3>BOLETO ALLDAY $250</h3>
-          <label>Inicial: <input type="number" id="boletoAllDayInicial" min="0" /></label>
-          <label>Final: <input type="number" id="boletoAllDayFinal" min="0" /></label>
-        </div>
+          <div class="grupo-inputs boleto boletoAllDay">
+            <label>BOLETO ALLDAY $250</label>
+            <input type="number" id="boletoAllDayInicial" placeholder="Inicial" min="0" />
+            <input type="number" id="boletoAllDayFinal" placeholder="Final" min="0" />
+          </div>
 
-        <div class="tipo-boleto personaExtra40">
-          <h3>PERSONA EXTRA $40</h3>
-          <label>Inicial: <input type="number" id="personaExtra40Inicial" min="0" /></label>
-          <label>Final: <input type="number" id="personaExtra40Final" min="0" /></label>
-        </div>
+          <div class="grupo-inputs boleto personaExtra40">
+            <label>PERSONA EXTRA $40</label>
+            <input type="number" id="personaExtra40Inicial" placeholder="Inicial" min="0" />
+            <input type="number" id="personaExtra40Final" placeholder="Final" min="0" />
+          </div>
 
-        <div class="tipo-boleto personaExtra60">
-          <h3>PERSONA EXTRA $60</h3>
-          <label>Inicial: <input type="number" id="personaExtra60Inicial" min="0" /></label>
-          <label>Final: <input type="number" id="personaExtra60Final" min="0" /></label>
-        </div>
+          <div class="grupo-inputs boleto personaExtra60">
+            <label>PERSONA EXTRA $60</label>
+            <input type="number" id="personaExtra60Inicial" placeholder="Inicial" min="0" />
+            <input type="number" id="personaExtra60Final" placeholder="Final" min="0" />
+          </div>
 
-        <!-- Tarjeta y efectivo -->
-        <div class="tipo-boleto tarjeta">
-          <h3>Tarjeta</h3>
-          <label>Crédito: <input type="number" id="tarjetaCredito" min="0" /></label>
-          <label>Débito: <input type="number" id="tarjetaDebito" min="0" /></label>
-          <label>Amex: <input type="number" id="tarjetaAmex" min="0" /></label>
-        </div>
+          <!-- Tarjetas y efectivo -->
+          <div class="grupo-inputs tarjeta">
+            <label>Crédito</label>
+            <input type="number" id="tarjetaCredito" placeholder="0" min="0" />
+          </div>
+          <div class="grupo-inputs tarjeta">
+            <label>Débito</label>
+            <input type="number" id="tarjetaDebito" placeholder="0" min="0" />
+          </div>
+          <div class="grupo-inputs tarjeta">
+            <label>Amex</label>
+            <input type="number" id="tarjetaAmex" placeholder="0" min="0" />
+          </div>
+          <div class="grupo-inputs tarjeta">
+            <label>Efectivo</label>
+            <input type="number" id="efectivoTotal" placeholder="0" min="0" />
+          </div>
 
-        <div class="tipo-boleto efectivo">
-          <label>Efectivo: <input type="number" id="efectivoTotal" min="0" /></label>
-        </div>
+          <!-- Calcetas -->
+          <div class="grupo-inputs calcetas">
+            <label>CALCETAS Iniciamos</label>
+            <input type="number" id="calcetasInicial" placeholder="Inicial" min="0" />
+          </div>
+          <div class="grupo-inputs calcetas">
+            <label>Terminamos</label>
+            <input type="number" id="calcetasTerminamos" placeholder="Final" min="0" />
+          </div>
 
-        <!-- Calcetas -->
-        <div class="tipo-boleto calcetas">
-          <h3>CALCETAS</h3>
-          <label>Iniciamos: <input type="number" id="calcetasInicial" min="0" /></label>
-          <label>Terminamos: <input type="number" id="calcetasTerminamos" min="0" /></label>
-          <p>Vendidas: <span id="calcetasVendidas">0</span></p>
-          <p>Total: <span id="calcetasTotal">$0</span></p>
-        </div>
+          <!-- Fondo -->
+          <div class="grupo-inputs fondo">
+            <label>Fondo</label>
+            <input type="number" id="inputFondo" placeholder="0" min="0" />
+          </div>
 
-        <div class="botones">
-          <button type="button" id="btnLimpiar">Limpiar datos</button>
-          <button type="button" id="btnCopiar">Copiar a portapapeles</button>
-        </div>
-      </form>
+          <div class="botones">
+            <button type="button" id="btnLimpiarInflables">Limpiar</button>
+            <button type="button" id="btnCopiarInflables">Copiar a portapapeles</button>
+          </div>
+        </form>
+      </div>
     </section>
 
-    <section id="derecha">
-      <h2>Bi-Bikes</h2>
-      <p>18/05/25</p>
-      <p>Folio inicial: 60156</p>
-      <p>Folio final: 60654</p>
-      <p>Penalización: 4</p>
-      <p>Total bicis: 499</p>
+    <!-- Bicis -->
+    <section id="seccionBicis" class="seccionOculta">
+      <div class="contenido">
+        <div class="texto-plano" id="textoPlanoBicis" aria-label="Resumen bicis"></div>
+
+        <form id="formBicis">
+          <label><strong>Bi-Bikes</strong></label>
+          <p>18/05/25</p>
+
+          <div class="grupo-inputs bici">
+            <label>Folio inicial</label>
+            <input type="number" id="biciFolioInicial" placeholder="Inicial" min="0" />
+          </div>
+          <div class="grupo-inputs bici">
+            <label>Folio final</label>
+            <input type="number" id="biciFolioFinal" placeholder="Final" min="0" />
+          </div>
+          <div class="grupo-inputs bici">
+            <label>Penalización</label>
+            <input type="number" id="biciPenalizacion" placeholder="Penalización" min="0" />
+          </div>
+          <div class="grupo-inputs bici">
+            <label>Total bicis</label>
+            <input type="number" id="biciTotal" placeholder="Total" min="0" />
+          </div>
+
+          <div class="botones">
+            <button type="button" id="btnLimpiarBicis">Limpiar</button>
+            <button type="button" id="btnCopiarBicis">Copiar a portapapeles</button>
+          </div>
+        </form>
+      </div>
     </section>
   </main>
 
