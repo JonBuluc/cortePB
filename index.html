@@ -7,77 +7,93 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="contenedor-principal">
-    <header>
-      <h1 class="titulo">Corte PB</h1>
+  <header>
+    <h1>Corte PB</h1>
+    <div id="inputFondoContainer">
+      <label for="inputFondo"><strong>Fondo: $</strong></label>
+      <input type="number" id="inputFondo" min="0" value="0" />
+    </div>
+  </header>
 
-      <!-- Form Fondo -->
-      <div class="formulario-fondo">
-        <label for="inputFondo">Fondo: $</label>
-        <input type="number" id="inputFondo" min="0" step="1" value="0" />
-      </div>
-    </header>
+  <main>
+    <section id="izquierda">
+      <article id="textoPlano" class="texto-plano"></article>
 
-    <main>
-      <!-- Izquierda: texto plano + forms -->
-      <section class="seccion-izquierda">
-        <div class="contenido-izquierda">
-          <p id="textoPlano">
-            <!-- Aquí va el texto plano generado por JS -->
-          </p>
+      <form id="formularios">
+        <!-- Inflables -->
+        <div class="tipo-boleto boleto15">
+          <h3>BOLETO 15 min $40</h3>
+          <label>Inicial: <input type="number" id="boleto15Inicial" min="0" /></label>
+          <label>Final: <input type="number" id="boleto15Final" min="0" /></label>
         </div>
 
-        <form id="formularioDatos" class="formulario-derecha">
-          <!-- Aquí van los inputs de boletos y demás, con las clases por tipo como antes -->
-          <!-- Ejemplo para boleto 15 min -->
-          <div class="seccion-formulario form-boleto15">
-            <label for="boleto15Inicial">**BOLETO 15 min**</label>
-            <input type="number" id="boleto15Inicial" placeholder="Inicial" />
-            <input type="number" id="boleto15Final" placeholder="Final" />
-          </div>
-          <!-- Replicar para los demás... (boleto30, boleto1hr, allDay, persona extra40, persona extra60) -->
+        <div class="tipo-boleto boleto30">
+          <h3>BOLETO 30 MIN $70</h3>
+          <label>Inicial: <input type="number" id="boleto30Inicial" min="0" /></label>
+          <label>Final: <input type="number" id="boleto30Final" min="0" /></label>
+        </div>
 
-          <!-- Tarjeta y efectivo -->
-          <div class="seccion-formulario form-tarjeta">
-            <label for="tarjetaCredito">**Tarjeta Crédito**</label>
-            <input type="number" id="tarjetaCredito" />
-            <label for="tarjetaDebito">**Débito**</label>
-            <input type="number" id="tarjetaDebito" />
-            <label for="tarjetaAmex">**Amex**</label>
-            <input type="number" id="tarjetaAmex" />
-            <label for="efectivoTotal">**Efectivo**</label>
-            <input type="number" id="efectivoTotal" />
-          </div>
+        <div class="tipo-boleto boleto1hr">
+          <h3>BOLETO 1HR $120</h3>
+          <label>Inicial: <input type="number" id="boleto1hrInicial" min="0" /></label>
+          <label>Final: <input type="number" id="boleto1hrFinal" min="0" /></label>
+        </div>
 
-          <!-- Calcetas -->
-          <div class="seccion-formulario form-global">
-            <label for="calcetasInicial">**CALCETAS Iniciamos**</label>
-            <input type="number" id="calcetasInicial" />
-            <label for="calcetasTerminamos">**Terminamos**</label>
-            <input type="number" id="calcetasTerminamos" />
-            <label>**Vendidas:** <span id="calcetasVendidas">0</span></label>
-            <label>**Total:** <span id="calcetasTotal">$0</span></label>
-          </div>
+        <div class="tipo-boleto boletoAllDay">
+          <h3>BOLETO ALLDAY $250</h3>
+          <label>Inicial: <input type="number" id="boletoAllDayInicial" min="0" /></label>
+          <label>Final: <input type="number" id="boletoAllDayFinal" min="0" /></label>
+        </div>
 
-          <!-- Botones -->
-          <div style="margin-top: 1rem;">
-            <button type="button" id="btnLimpiar">Limpiar datos</button>
-            <button type="button" id="btnCopiar">Copiar a portapapeles</button>
-          </div>
-        </form>
-      </section>
+        <div class="tipo-boleto personaExtra40">
+          <h3>PERSONA EXTRA $40</h3>
+          <label>Inicial: <input type="number" id="personaExtra40Inicial" min="0" /></label>
+          <label>Final: <input type="number" id="personaExtra40Final" min="0" /></label>
+        </div>
 
-      <!-- Derecha: datos Bi-Bikes -->
-      <section class="seccion-derecha">
-        <h2>Bi-Bikes</h2>
-        <p>18/05/25</p>
-        <p>Folio inicial: 60156</p>
-        <p>Folio final: 60654</p>
-        <p>Penalización: 4</p>
-        <p>Total bicis: 499</p>
-      </section>
-    </main>
-  </div>
+        <div class="tipo-boleto personaExtra60">
+          <h3>PERSONA EXTRA $60</h3>
+          <label>Inicial: <input type="number" id="personaExtra60Inicial" min="0" /></label>
+          <label>Final: <input type="number" id="personaExtra60Final" min="0" /></label>
+        </div>
+
+        <!-- Tarjeta y efectivo -->
+        <div class="tipo-boleto tarjeta">
+          <h3>Tarjeta</h3>
+          <label>Crédito: <input type="number" id="tarjetaCredito" min="0" /></label>
+          <label>Débito: <input type="number" id="tarjetaDebito" min="0" /></label>
+          <label>Amex: <input type="number" id="tarjetaAmex" min="0" /></label>
+        </div>
+
+        <div class="tipo-boleto efectivo">
+          <label>Efectivo: <input type="number" id="efectivoTotal" min="0" /></label>
+        </div>
+
+        <!-- Calcetas -->
+        <div class="tipo-boleto calcetas">
+          <h3>CALCETAS</h3>
+          <label>Iniciamos: <input type="number" id="calcetasInicial" min="0" /></label>
+          <label>Terminamos: <input type="number" id="calcetasTerminamos" min="0" /></label>
+          <p>Vendidas: <span id="calcetasVendidas">0</span></p>
+          <p>Total: <span id="calcetasTotal">$0</span></p>
+        </div>
+
+        <div class="botones">
+          <button type="button" id="btnLimpiar">Limpiar datos</button>
+          <button type="button" id="btnCopiar">Copiar a portapapeles</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="derecha">
+      <h2>Bi-Bikes</h2>
+      <p>18/05/25</p>
+      <p>Folio inicial: 60156</p>
+      <p>Folio final: 60654</p>
+      <p>Penalización: 4</p>
+      <p>Total bicis: 499</p>
+    </section>
+  </main>
 
   <script src="main.js"></script>
 </body>
