@@ -5,121 +5,80 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Corte PB</title>
   <link rel="stylesheet" href="styles.css" />
-  <script defer src="main.js"></script>
 </head>
 <body>
-  <div class="contenido-izquierda">
-    <div class="titulo">Corte PB</div>
+  <div class="contenedor-principal">
+    <header>
+      <h1 class="titulo">Corte PB</h1>
 
-    <!-- Inputs justo abajo del título -->
-    <div class="formulario-derecha" style="margin-bottom: 1rem;">
-      <div class="seccion-formulario form-boleto15">
-        <label>BOLETO 15min</label>
-        <input id="boleto15Inicial" type="number" placeholder="Inicial" />
-        <input id="boleto15Final" type="number" placeholder="Final" />
+      <!-- Form Fondo -->
+      <div class="formulario-fondo">
+        <label for="inputFondo">Fondo: $</label>
+        <input type="number" id="inputFondo" min="0" step="1" value="0" />
       </div>
-      <div class="seccion-formulario form-boleto30">
-        <label>BOLETO 30min</label>
-        <input id="boleto30Inicial" type="number" placeholder="Inicial" />
-        <input id="boleto30Final" type="number" placeholder="Final" />
-      </div>
-      <div class="seccion-formulario form-boleto1h">
-        <label>BOLETO 1HR</label>
-        <input id="boleto1hInicial" type="number" placeholder="Inicial" />
-        <input id="boleto1hFinal" type="number" placeholder="Final" />
-      </div>
-      <div class="seccion-formulario form-boletoAD">
-        <label>BOLETO ALLDAY</label>
-        <input id="boletoAlldayInicial" type="number" placeholder="Inicial" />
-        <input id="boletoAlldayFinal" type="number" placeholder="Final" />
-      </div>
-      <div class="seccion-formulario form-extra40">
-        <label>PERSONA EXTRA $40</label>
-        <input id="personaExtra40Inicial" type="number" placeholder="Inicial" />
-        <input id="personaExtra40Final" type="number" placeholder="Final" />
-      </div>
-      <div class="seccion-formulario form-extra60">
-        <label>PERSONA EXTRA $60</label>
-        <input id="personaExtra60Inicial" type="number" placeholder="Inicial" />
-        <input id="personaExtra60Final" type="number" placeholder="Final" />
-      </div>
-      <div class="seccion-formulario form-tarjeta">
-        <label>TARJETAS</label>
-        <input id="tarjetaCredito" type="number" placeholder="Crédito" />
-        <input id="tarjetaDebito" type="number" placeholder="Débito" />
-        <input id="tarjetaAmex" type="number" placeholder="Amex" />
-      </div>
-      <div class="seccion-formulario form-global">
-        <label>EFECTIVO</label>
-        <input id="efectivoTotal" type="number" placeholder="Efectivo" />
-        <label>CALCETAS</label>
-        <input id="calcetasInicial" type="number" placeholder="Inicial" />
-        <input id="calcetasTerminamos" type="number" placeholder="Terminamos" />
-      </div>
+    </header>
 
-      <!-- Botones -->
-      <div style="margin-top: 1rem;">
-        <button id="botonLimpiar">Limpiar</button>
-        <button id="botonExportar">Exportar WhatsApp</button>
-      </div>
-    </div>
+    <main>
+      <!-- Izquierda: texto plano + forms -->
+      <section class="seccion-izquierda">
+        <div class="contenido-izquierda">
+          <p id="textoPlano">
+            <!-- Aquí va el texto plano generado por JS -->
+          </p>
+        </div>
 
-    <p>
-      <strong>INFLABLES</strong><br />
-      15/05/25<br /><br />
+        <form id="formularioDatos" class="formulario-derecha">
+          <!-- Aquí van los inputs de boletos y demás, con las clases por tipo como antes -->
+          <!-- Ejemplo para boleto 15 min -->
+          <div class="seccion-formulario form-boleto15">
+            <label for="boleto15Inicial">**BOLETO 15 min**</label>
+            <input type="number" id="boleto15Inicial" placeholder="Inicial" />
+            <input type="number" id="boleto15Final" placeholder="Final" />
+          </div>
+          <!-- Replicar para los demás... (boleto30, boleto1hr, allDay, persona extra40, persona extra60) -->
 
-      <em><strong>BOLETO 15 min</strong></em> $40<br />
-      Inicial: <span id="boleto15InicialTexto"></span><br />
-      Final: <span id="boleto15FinalTexto"></span><br />
-      Boletos: <span id="boleto15Boletos">0</span><br />
-      Total: <span id="boleto15Total">$0</span><br /><br />
+          <!-- Tarjeta y efectivo -->
+          <div class="seccion-formulario form-tarjeta">
+            <label for="tarjetaCredito">**Tarjeta Crédito**</label>
+            <input type="number" id="tarjetaCredito" />
+            <label for="tarjetaDebito">**Débito**</label>
+            <input type="number" id="tarjetaDebito" />
+            <label for="tarjetaAmex">**Amex**</label>
+            <input type="number" id="tarjetaAmex" />
+            <label for="efectivoTotal">**Efectivo**</label>
+            <input type="number" id="efectivoTotal" />
+          </div>
 
-      <em><strong>BOLETO 30 min</strong></em> $70<br />
-      Inicial: <span id="boleto30InicialTexto"></span><br />
-      Final: <span id="boleto30FinalTexto"></span><br />
-      Boletos: <span id="boleto30Boletos">0</span><br />
-      Total: <span id="boleto30Total">$0</span><br /><br />
+          <!-- Calcetas -->
+          <div class="seccion-formulario form-global">
+            <label for="calcetasInicial">**CALCETAS Iniciamos**</label>
+            <input type="number" id="calcetasInicial" />
+            <label for="calcetasTerminamos">**Terminamos**</label>
+            <input type="number" id="calcetasTerminamos" />
+            <label>**Vendidas:** <span id="calcetasVendidas">0</span></label>
+            <label>**Total:** <span id="calcetasTotal">$0</span></label>
+          </div>
 
-      <em><strong>BOLETO 1HR</strong></em> $120<br />
-      Inicial: <span id="boleto1hInicialTexto"></span><br />
-      Final: <span id="boleto1hFinalTexto"></span><br />
-      Boletos: <span id="boleto1hBoletos">0</span><br />
-      Total: <span id="boleto1hTotal">$0</span><br /><br />
+          <!-- Botones -->
+          <div style="margin-top: 1rem;">
+            <button type="button" id="btnLimpiar">Limpiar datos</button>
+            <button type="button" id="btnCopiar">Copiar a portapapeles</button>
+          </div>
+        </form>
+      </section>
 
-      <em><strong>BOLETO ALLDAY</strong></em> $250<br />
-      Inicial: <span id="boletoAlldayInicialTexto"></span><br />
-      Final: <span id="boletoAlldayFinalTexto"></span><br />
-      Boletos: <span id="boletoAlldayBoletos">0</span><br />
-      Total: <span id="boletoAlldayTotal">$0</span><br /><br />
-
-      <em><strong>PERSONA EXTRA</strong></em> $40<br />
-      Inicial: <span id="personaExtra40InicialTexto"></span><br />
-      Final: <span id="personaExtra40FinalTexto"></span><br />
-      Venta: <span id="personaExtra40Boletos">0</span><br />
-      Total: <span id="personaExtra40Total">$0</span><br /><br />
-
-      <em><strong>PERSONA EXTRA</strong></em> $60<br />
-      Inicial: <span id="personaExtra60InicialTexto"></span><br />
-      Final: <span id="personaExtra60FinalTexto"></span><br />
-      Venta: <span id="personaExtra60Boletos">0</span><br />
-      Total: <span id="personaExtra60Total">$0</span><br /><br />
-
-      <strong>Tarjeta</strong><br />
-      Crédito: <span id="tarjetaCreditoTexto">$0</span><br />
-      Débito: <span id="tarjetaDebitoTexto">$0</span><br />
-      Amex: <span id="tarjetaAmexTexto"></span><br />
-      Total: <span id="totalTarjeta">$0</span><br />
-      Efectivo: <span id="efectivoTexto">$0</span><br />
-      Total venta: <span id="totalVenta">$0</span><br />
-      Total de boletos: <span id="totalBoletos">0</span><br />
-      Global: <span id="globalTotal">$0</span><br /><br />
-
-      <strong>CALCETAS</strong><br />
-      Iniciamos: <span id="calcetasInicialTexto"></span><br />
-      Terminamos: <span id="calcetasTerminamosTexto"></span><br />
-      Vendidas: <span id="calcetasVendidas">0</span><br />
-      Total: <span id="calcetasTotal">$0</span><br />
-    </p>
+      <!-- Derecha: datos Bi-Bikes -->
+      <section class="seccion-derecha">
+        <h2>Bi-Bikes</h2>
+        <p>18/05/25</p>
+        <p>Folio inicial: 60156</p>
+        <p>Folio final: 60654</p>
+        <p>Penalización: 4</p>
+        <p>Total bicis: 499</p>
+      </section>
+    </main>
   </div>
+
+  <script src="main.js"></script>
 </body>
 </html>

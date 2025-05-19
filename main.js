@@ -1,115 +1,206 @@
-function calcularBoletosYTotales() {
-    const boletos = [
-      { id: 'boleto15', precio: 40 },
-      { id: 'boleto30', precio: 70 },
-      { id: 'boleto1h', precio: 120 },
-      { id: 'boletoAllday', precio: 250 },
-      { id: 'personaExtra40', precio: 40 },
-      { id: 'personaExtra60', precio: 60 }
-    ];
-  
-    boletos.forEach(({ id, precio }) => {
-      const inicial = parseInt(document.getElementById(id + 'Inicial').value) || 0;
-      const final = parseInt(document.getElementById(id + 'Final').value) || 0;
-      const cantidadBoletos = final && inicial ? (final - inicial + 1) : 0;
-      const total = cantidadBoletos * precio;
-  
-      document.getElementById(id + 'Boletos').innerText = cantidadBoletos;
-      document.getElementById(id + 'Total').innerText = `$${total}`;
-      if (document.getElementById(id + 'InicialTexto')) {
-        document.getElementById(id + 'InicialTexto').innerText = inicial;
-        document.getElementById(id + 'FinalTexto').innerText = final || '';
-      }
-    });
-  
-    const credito = parseInt(document.getElementById('tarjetaCredito').value) || 0;
-    const debito = parseInt(document.getElementById('tarjetaDebito').value) || 0;
-    const amex = parseInt(document.getElementById('tarjetaAmex').value) || 0;
-    const efectivo = parseInt(document.getElementById('efectivoTotal').value) || 0;
-  
-    const totalTarjeta = credito + debito + amex;
-    document.getElementById('totalTarjeta').innerText = `$${totalTarjeta}`;
-    document.getElementById('tarjetaCreditoTexto').innerText = `$${credito}`;
-    document.getElementById('tarjetaDebitoTexto').innerText = `$${debito}`;
-    document.getElementById('tarjetaAmexTexto').innerText = amex ? `$${amex}` : '';
-    document.getElementById('efectivoTexto').innerText = `$${efectivo}`;
-  
-    const totalVenta = totalTarjeta + efectivo;
-    document.getElementById('totalVenta').innerText = `$${totalVenta}`;
-  
-    const totalBoletos = boletos.reduce((sum, { id }) => {
-      return sum + (parseInt(document.getElementById(id + 'Boletos').innerText) || 0);
-    }, 0);
-    document.getElementById('totalBoletos').innerText = totalBoletos;
-  
-    const global = boletos.reduce((sum, { id }) => {
-      const total = parseInt(document.getElementById(id + 'Total').innerText.replace('$', '')) || 0;
-      return sum + total;
-    }, 0) + (parseInt(document.getElementById('calcetasTotal').innerText.replace('$', '')) || 0);
-    document.getElementById('globalTotal').innerText = `$${global}`;
-  
-    const calcetasInicial = parseInt(document.getElementById('calcetasInicial').value) || 0;
-    const calcetasTerminamos = parseInt(document.getElementById('calcetasTerminamos').value) || 0;
-    const calcetasVendidas = calcetasInicial - calcetasTerminamos;
-    const totalCalcetas = calcetasVendidas * 35;
-  
-    document.getElementById('calcetasInicialTexto').innerText = calcetasInicial;
-    document.getElementById('calcetasTerminamosTexto').innerText = calcetasTerminamos;
-    document.getElementById('calcetasVendidas').innerText = calcetasVendidas;
-    document.getElementById('calcetasTotal').innerText = `$${totalCalcetas}`;
-  }
-  
-  document.querySelectorAll('input').forEach(input => {
-    input.addEventListener('input', calcularBoletosYTotales);
-  });
+// Referencias a inputs
+const inputFondo = document.getElementById('inputFondo');
 
-// Botón limpiar: borra todos los inputs y recalcula
-document.getElementById('botonLimpiar').addEventListener('click', () => {
-    document.querySelectorAll('input').forEach(input => input.value = '');
-    calcularBoletosYTotales();
+const boleto15Inicial = document.getElementById('boleto15Inicial');
+const boleto15Final = document.getElementById('boleto15Final');
+
+const boleto30Inicial = document.getElementById('boleto30Inicial');
+const boleto30Final = document.getElementById('boleto30Final');
+
+const boleto1hrInicial = document.getElementById('boleto1hrInicial');
+const boleto1hrFinal = document.getElementById('boleto1hrFinal');
+
+const boletoAllDayInicial = document.getElementById('boletoAllDayInicial');
+const boletoAllDayFinal = document.getElementById('boletoAllDayFinal');
+
+const personaExtra40Inicial = document.getElementById('personaExtra40Inicial');
+const personaExtra40Final = document.getElementById('personaExtra40Final');
+
+const personaExtra60Inicial = document.getElementById('personaExtra60Inicial');
+const personaExtra60Final = document.getElementById('personaExtra60Final');
+
+const tarjetaCredito = document.getElementById('tarjetaCredito');
+const tarjetaDebito = document.getElementById('tarjetaDebito');
+const tarjetaAmex = document.getElementById('tarjetaAmex');
+const efectivoTotal = document.getElementById('efectivoTotal');
+
+const calcetasInicial = document.getElementById('calcetasInicial');
+const calcetasTerminamos = document.getElementById('calcetasTerminamos');
+const calcetasVendidasSpan = document.getElementById('calcetasVendidas');
+const calcetasTotalSpan = document.getElementById('calcetasTotal');
+
+const textoPlano = document.getElementById('textoPlano');
+
+const btnLimpiar = document.getElementById('btnLimpiar');
+const btnCopiar = document.getElementById('btnCopiar');
+
+// Precios fijos
+const preciosPorTipo = {
+  boleto15: 40,
+  boleto30: 70,
+  boleto1hr: 120,
+  boletoAllDay: 250,
+  personaExtra40: 40,
+  personaExtra60: 60,
+};
+
+// Función para calcular boletos y total, con control para no negativos ni NaN
+function calcularBoletosYTotal(inicial, final, precio) {
+  const inicialNum = Number(inicial);
+  const finalNum = Number(final);
+  if (isNaN(inicialNum) || isNaN(finalNum) || finalNum < inicialNum) {
+    return { boletos: 0, total: 0 };
+  }
+  const boletos = finalNum - inicialNum + 1;
+  const total = boletos * precio;
+  return { boletos, total };
+}
+
+// Actualiza calcetas vendidos y total
+function actualizarCalcetas() {
+  const inicialNum = Number(calcetasInicial.value) || 0;
+  const terminadoNum = Number(calcetasTerminamos.value) || 0;
+  const vendidas = inicialNum - terminadoNum >= 0 ? inicialNum - terminadoNum : 0;
+  const total = vendidas * 35; // precio fijo calcetas
+  calcetasVendidasSpan.textContent = vendidas;
+  calcetasTotalSpan.textContent = `$${total}`;
+  return { vendidas, total };
+}
+
+// Genera el texto plano para mostrar y copiar
+function generarTextoPlano() {
+  // Calculos boletos
+  const boleto15Calc = calcularBoletosYTotal(boleto15Inicial.value, boleto15Final.value, preciosPorTipo.boleto15);
+  const boleto30Calc = calcularBoletosYTotal(boleto30Inicial.value, boleto30Final.value, preciosPorTipo.boleto30);
+  const boleto1hrCalc = calcularBoletosYTotal(boleto1hrInicial.value, boleto1hrFinal.value, preciosPorTipo.boleto1hr);
+  const boletoAllDayCalc = calcularBoletosYTotal(boletoAllDayInicial.value, boletoAllDayFinal.value, preciosPorTipo.boletoAllDay);
+  const personaExtra40Calc = calcularBoletosYTotal(personaExtra40Inicial.value, personaExtra40Final.value, preciosPorTipo.personaExtra40);
+  const personaExtra60Calc = calcularBoletosYTotal(personaExtra60Inicial.value, personaExtra60Final.value, preciosPorTipo.personaExtra60);
+
+  // Calcetas
+  const calcetas = actualizarCalcetas();
+
+  // Totales tarjeta y efectivo
+  const tarjetaCreditoNum = Number(tarjetaCredito.value) || 0;
+  const tarjetaDebitoNum = Number(tarjetaDebito.value) || 0;
+  const tarjetaAmexNum = Number(tarjetaAmex.value) || 0;
+  const efectivoNum = Number(efectivoTotal.value) || 0;
+
+  // Total venta boletos sumados
+  const totalBoletos = boleto15Calc.boletos + boleto30Calc.boletos + boleto1hrCalc.boletos + boletoAllDayCalc.boletos + personaExtra40Calc.boletos + personaExtra60Calc.boletos;
+  const totalVentaBoletos = boleto15Calc.total + boleto30Calc.total + boleto1hrCalc.total + boletoAllDayCalc.total + personaExtra40Calc.total + personaExtra60Calc.total;
+
+  // Global total
+  const globalTotal = totalVentaBoletos + efectivoNum;
+
+  // Fondo
+  const fondoNum = Number(inputFondo.value) || 0;
+
+  // Texto plano con negritas para WhatsApp
+  const texto = 
+`**INFLABLES**
+15/05/25
+
+**BOLETO 15 min $40**
+Inicial: ${boleto15Inicial.value || '---'}
+Final: ${boleto15Final.value || '---'}
+Boletos: ${boleto15Calc.boletos}
+Total: $${boleto15Calc.total}
+
+**BOLETO 30 MIN $70**
+Inicial: ${boleto30Inicial.value || '---'}
+Final: ${boleto30Final.value || '---'}
+Boletos: ${boleto30Calc.boletos}
+Total: $${boleto30Calc.total}
+
+**BOLETO 1HR $120**
+Inicial: ${boleto1hrInicial.value || '---'}
+Final: ${boleto1hrFinal.value || '---'}
+Boletos: ${boleto1hrCalc.boletos}
+Total: $${boleto1hrCalc.total}
+
+**BOLETO ALLDAY $250**
+Inicial: ${boletoAllDayInicial.value || '---'}
+Final: ${boletoAllDayFinal.value || '---'}
+Boletos: ${boletoAllDayCalc.boletos}
+Total: $${boletoAllDayCalc.total}
+
+**PERSONA EXTRA $40**
+Inicial: ${personaExtra40Inicial.value || '---'}
+Final: ${personaExtra40Final.value || '---'}
+Venta: ${personaExtra40Calc.boletos}
+Total: $${personaExtra40Calc.total}
+
+**PERSONA EXTRA $60**
+Inicial: ${personaExtra60Inicial.value || '---'}
+Final: ${personaExtra60Final.value || '---'}
+Venta: ${personaExtra60Calc.boletos}
+Total: $${personaExtra60Calc.total}
+
+**Tarjeta**
+Crédito: $${tarjetaCreditoNum}
+Débito: $${tarjetaDebitoNum}
+Amex: $${tarjetaAmexNum}
+Total: $${tarjetaCreditoNum + tarjetaDebitoNum + tarjetaAmexNum}
+Efectivo: $${efectivoNum}
+Total venta: $${totalVentaBoletos}
+Total de boletos: ${totalBoletos}
+Global: $${globalTotal}
+
+**CALCETAS**
+Iniciamos: ${calcetasInicial.value || '---'}
+Terminamos: ${calcetasTerminamos.value || '---'}
+Vendidas: ${calcetas.vendidas}
+Total: $${calcetas.total}
+
+Fondo: $${fondoNum}
+
+---
+
+**Bi-Bikes**
+18/05/25
+Folio inicial: 60156
+Folio final: 60654
+Penalización: 4
+Total bicis: 499
+`;
+
+  textoPlano.textContent = texto;
+}
+
+// Limpiar todos los inputs
+function limpiarDatos() {
+  const todosInputs = document.querySelectorAll('input[type=number]');
+  todosInputs.forEach(input => input.value = '');
+  inputFondo.value = 0;
+  calcetasVendidasSpan.textContent = '0';
+  calcetasTotalSpan.textContent = '$0';
+  textoPlano.textContent = '';
+}
+
+// Copiar al portapapeles
+function copiarPortapapeles() {
+  const texto = textoPlano.textContent;
+  navigator.clipboard.writeText(texto).then(() => {
+    alert('Texto copiado al portapapeles.');
+  }).catch(() => {
+    alert('Error al copiar al portapapeles.');
   });
-  
-  // Botón exportar: copia texto plano al portapapeles listo para WhatsApp
-  document.getElementById('botonExportar').addEventListener('click', () => {
-    let textoParaWhatsApp = 'Corte PB\n15/05/25\n\n';
-  
-    const boletos = [
-      { id: 'boleto15', nombre: 'BOLETO 15min', precio: 40 },
-      { id: 'boleto30', nombre: 'BOLETO 30min', precio: 70 },
-      { id: 'boleto1h', nombre: 'BOLETO 1HR', precio: 120 },
-      { id: 'boletoAllday', nombre: 'BOLETO ALLDAY', precio: 250 },
-      { id: 'personaExtra40', nombre: 'PERSONA EXTRA $40', precio: 40 },
-      { id: 'personaExtra60', nombre: 'PERSONA EXTRA $60', precio: 60 },
-    ];
-  
-    boletos.forEach(({ id, nombre, precio }) => {
-      const inicial = document.getElementById(id + 'Inicial').value || '';
-      const final = document.getElementById(id + 'Final').value || '';
-      const boletosCount = document.getElementById(id + 'Boletos').innerText || '0';
-      const total = document.getElementById(id + 'Total').innerText || '$0';
-  
-      textoParaWhatsApp += `${nombre} $${precio}\nInicial: ${inicial}\nFinal: ${final}\nBoletos: ${boletosCount}\nTotal: ${total}\n\n`;
-    });
-  
-    const credito = document.getElementById('tarjetaCredito').value || 0;
-    const debito = document.getElementById('tarjetaDebito').value || 0;
-    const amex = document.getElementById('tarjetaAmex').value || 0;
-    const efectivo = document.getElementById('efectivoTotal').value || 0;
-  
-    textoParaWhatsApp += `Tarjetas:\nCrédito: $${credito}\nDébito: $${debito}\nAmex: $${amex}\n\n`;
-    textoParaWhatsApp += `Efectivo: $${efectivo}\n\n`;
-  
-    const calcetasInicial = document.getElementById('calcetasInicial').value || '';
-    const calcetasTerminamos = document.getElementById('calcetasTerminamos').value || '';
-    const calcetasVendidas = document.getElementById('calcetasVendidas').innerText || '0';
-    const calcetasTotal = document.getElementById('calcetasTotal').innerText || '$0';
-  
-    textoParaWhatsApp += `Calcetas\nIniciamos: ${calcetasInicial}\nTerminamos: ${calcetasTerminamos}\nVendidas: ${calcetasVendidas}\nTotal: ${calcetasTotal}\n`;
-  
-    // Copiar al portapapeles
-    navigator.clipboard.writeText(textoParaWhatsApp)
-      .then(() => alert('Datos copiados para WhatsApp!'))
-      .catch(() => alert('Error copiando al portapapeles.'));
-  });
-  
-  
+}
+
+// Event listeners para actualizar texto cada vez que cambian inputs
+const inputsActualizar = document.querySelectorAll('input[type=number]');
+inputsActualizar.forEach(input => {
+  input.addEventListener('input', generarTextoPlano);
+});
+
+// Botones
+btnLimpiar.addEventListener('click', () => {
+  limpiarDatos();
+  generarTextoPlano();
+});
+
+btnCopiar.addEventListener('click', copiarPortapapeles);
+
+// Inicializar texto plano vacío al cargar
+generarTextoPlano();
