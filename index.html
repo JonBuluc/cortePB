@@ -1,77 +1,158 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Corte Inflables 17/04/25</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Corte Inflables 15/05/25</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       white-space: pre-wrap;
       background: #fefefe;
       padding: 2rem;
+      max-width: 600px;
+      margin: auto;
     }
     h1 {
       text-align: center;
+    }
+    .boleto-section {
+      margin-bottom: 1.5rem;
+    }
+    label {
+      display: inline-block;
+      width: 70px;
+      font-weight: bold;
+    }
+    input[type="number"] {
+      width: 70px;
+      margin-right: 0.5rem;
+    }
+    .resultado {
+      margin-top: 0.5rem;
+    }
+    .total-global {
+      font-weight: bold;
+      margin-top: 2rem;
+      border-top: 1px solid #ccc;
+      padding-top: 1rem;
     }
   </style>
 </head>
 <body>
   <h1>Corte Inflables</h1>
-  <p><strong>INFLABLES</strong><br>
-17/04/25<br><br>
+  <p><strong>INFLABLES</strong><br>15/05/25</p>
 
-<em><strong>BOLETO 15 min</strong></em> $40<br>
-Inicial: 13300<br>
-Final: 13366<br>
-Boletos: 67<br>
-Total: $2680<br><br>
+  <form id="formCorteInflables">
+    <!-- Boleto 15 min -->
+    <div class="boleto-section" data-precio="40">
+      <em><strong>BOLETO 15 min $40</strong></em><br>
+      <label for="boleto15Inicial">Inicial:</label>
+      <input type="number" id="boleto15Inicial" min="0" required />
+      <label for="boleto15Final">Final:</label>
+      <input type="number" id="boleto15Final" min="0" required />
+      <div class="resultado">
+        Boletos: <span id="boleto15Boletos">0</span><br />
+        Total: $<span id="boleto15Total">0</span>
+      </div>
+    </div>
 
-<em><strong>BOLETO 30 MIN</strong></em> $70<br>
-Inicial: 17445<br>
-Final: 17489<br>
-Boletos: 45<br>
-Total: $3150<br><br>
+    <!-- Boleto 30 min -->
+    <div class="boleto-section" data-precio="70">
+      <em><strong>BOLETO 30 MIN $70</strong></em><br>
+      <label for="boleto30Inicial">Inicial:</label>
+      <input type="number" id="boleto30Inicial" min="0" required />
+      <label for="boleto30Final">Final:</label>
+      <input type="number" id="boleto30Final" min="0" required />
+      <div class="resultado">
+        Boletos: <span id="boleto30Boletos">0</span><br />
+        Total: $<span id="boleto30Total">0</span>
+      </div>
+    </div>
 
-<em><strong>BOLETO 1HR</strong></em> $120<br>
-Inicial: 4005<br>
-Final: 4031<br>
-Boletos: 27<br>
-Total: $3240<br><br>
+    <!-- Boleto 1HR -->
+    <div class="boleto-section" data-precio="120">
+      <em><strong>BOLETO 1HR $120</strong></em><br>
+      <label for="boleto1hInicial">Inicial:</label>
+      <input type="number" id="boleto1hInicial" min="0" required />
+      <label for="boleto1hFinal">Final:</label>
+      <input type="number" id="boleto1hFinal" min="0" required />
+      <div class="resultado">
+        Boletos: <span id="boleto1hBoletos">0</span><br />
+        Total: $<span id="boleto1hTotal">0</span>
+      </div>
+    </div>
 
-<em><strong>BOLETO ALLDAY</strong></em> $250<br>
-Inicial: 136<br>
-Final: 142<br>
-Boletos: 7<br>
-Total: $1750<br><br>
+    <!-- Boleto ALLDAY -->
+    <div class="boleto-section" data-precio="250">
+      <em><strong>BOLETO ALLDAY $250</strong></em><br>
+      <label for="boletoAlldayInicial">Inicial:</label>
+      <input type="number" id="boletoAlldayInicial" min="0" />
+      <label for="boletoAlldayFinal">Final:</label>
+      <input type="number" id="boletoAlldayFinal" min="0" />
+      <div class="resultado">
+        Boletos: <span id="boletoAlldayBoletos">0</span><br />
+        Total: $<span id="boletoAlldayTotal">0</span>
+      </div>
+    </div>
 
-<em><strong>PERSONA EXTRA</strong></em> $40<br>
-Inicial: 1465<br>
-Final: 1484<br>
-Venta: 20<br>
-Total: $800<br><br>
+    <!-- Persona extra $40 -->
+    <div class="boleto-section" data-precio="40">
+      <em><strong>PERSONA EXTRA $40</strong></em><br>
+      <label for="personaExtra40Inicial">Inicial:</label>
+      <input type="number" id="personaExtra40Inicial" min="0" />
+      <label for="personaExtra40Final">Final:</label>
+      <input type="number" id="personaExtra40Final" min="0" />
+      <div class="resultado">
+        Venta: <span id="personaExtra40Boletos">0</span><br />
+        Total: $<span id="personaExtra40Total">0</span>
+      </div>
+    </div>
 
-<em><strong>PERSONA EXTRA</strong></em> $60<br>
-Inicial: 32<br>
-Final:<br>
-Venta:<br>
-Total:<br><br>
+    <!-- Persona extra $60 -->
+    <div class="boleto-section" data-precio="60">
+      <em><strong>PERSONA EXTRA $60</strong></em><br>
+      <label for="personaExtra60Inicial">Inicial:</label>
+      <input type="number" id="personaExtra60Inicial" min="0" />
+      <label for="personaExtra60Final">Final:</label>
+      <input type="number" id="personaExtra60Final" min="0" />
+      <div class="resultado">
+        Venta: <span id="personaExtra60Boletos">0</span><br />
+        Total: $<span id="personaExtra60Total">0</span>
+      </div>
+    </div>
 
-<strong>Tarjeta</strong><br>
-Crédito: $1205<br>
-Débito: $2640<br>
-Amex:<br>
-Total: $3845<br>
-Efectivo: $6475<br>
-Total venta: $10820<br>
-Total de boletos: 166<br>
-Global: $14075<br><br>
+    <hr />
 
-<strong>CALCETAS</strong><br>
-Iniciamos: 644<br>
-Terminamos: 469<br>
-Vendidas: 93<br>
-Total: $3255<br>
-  </p>
+    <!-- Tarjeta -->
+    <p><strong>Tarjeta</strong></p>
+    <label for="tarjetaCredito">Crédito:</label>
+    <input type="number" id="tarjetaCredito" min="0" value="0" /><br />
+    <label for="tarjetaDebito">Débito:</label>
+    <input type="number" id="tarjetaDebito" min="0" value="0" /><br />
+    <label for="tarjetaAmex">Amex:</label>
+    <input type="number" id="tarjetaAmex" min="0" value="0" /><br />
+    <p>
+      Total: $<span id="totalTarjeta">0</span><br />
+      Efectivo: $<input type="number" id="efectivoTotal" min="0" value="0" /><br />
+      Total venta: $<span id="totalVenta">0</span><br />
+      Total de boletos: <span id="totalBoletos">0</span><br />
+      Global: $<span id="globalTotal">0</span>
+    </p>
+
+    <!-- Calcetas -->
+    <p><strong>CALCETAS</strong></p>
+    <label for="calcetasInicial">Iniciamos:</label>
+    <input type="number" id="calcetasInicial" min="0" value="0" />
+    <label for="calcetasTerminamos">Terminamos:</label>
+    <input type="number" id="calcetasTerminamos" min="0" value="0" />
+    <div class="resultado">
+      Vendidas: <span id="calcetasVendidas">0</span><br />
+      Total: $<span id="calcetasTotal">0</span>
+    </div>
+
+    <p><strong>Fondo:</strong> $<input type="number" id="fondoTotal" min="0" value="0" /></p>
+  </form>
+  <script src="main.js"></script>
 </body>
 </html>
