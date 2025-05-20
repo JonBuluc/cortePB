@@ -82,7 +82,7 @@ main {
 
 /* Form lado derecho */
 form {
-  flex: 1 1 45%;
+  flex: 1 1 30%;
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem 1rem;
