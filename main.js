@@ -1,10 +1,13 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 import { doc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 import { firebaseConfig } from './firebaseConfig.js';
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
 export { db };
 
@@ -58,6 +61,35 @@ const inputsInflables = {
     personaExtra60: 60,
     calcetas: 35,
   };
+
+//funcion para tener un userid con google
+let usuarioID = null;
+
+
+function loginConGoogle() {
+  signInWithPopup(auth, provider)
+    .then(result => {
+      const user = result.user;
+      usuarioID = user.uid; // <-- AQUÍ GUARDAS EL UID
+      console.log("Usuario logueado con Google:", usuarioID);
+      // Ya puedes usar usuarioID en tus funciones Firestore
+    })
+    .catch(error => {
+      console.error("Error en login Google:", error.message);
+    });
+}
+
+onAuthStateChanged(auth, user => {
+  if (user) {
+    usuarioID = user.uid; // <-- TAMBIÉN LO GUARDAS AQUÍ
+    console.log("Usuario activo:", usuarioID);
+  } else {
+    console.log("No hay usuario logueado");
+  }
+});
+
+window.loginConGoogle = loginConGoogle;
+
   
   function calcularBoletos(inicial, final) {
     const inicioNum = Number(inicial);
@@ -335,8 +367,6 @@ async function guardarCorteInflables(usuarioId) {
     }
   }
   
-  // Hardcodeamos usuarioId para pruebas, reemplaza por tu sistema de autenticación
-  const usuarioId = "idDelUsuarioAqui";
   
   // Eventos
   Object.values(inputsInflables).forEach(input => {
@@ -373,11 +403,11 @@ async function guardarCorteInflables(usuarioId) {
   });
   
   document.getElementById("btnGuardarInflables").addEventListener("click", () => {
-    guardarCorteInflables(usuarioId);
+    guardarCorteInflables(usuarioID);
   });
   
   document.getElementById("btnGuardarBicis").addEventListener("click", () => {
-    guardarCorteBicis(usuarioId);
+    guardarCorteBicis(usuarioID);
   });
   
   // Inicializar textos planos
