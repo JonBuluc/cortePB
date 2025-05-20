@@ -93,20 +93,19 @@ const inputsInflables = {
     const tarjetaDebitoNum = Number(inputsInflables.tarjetaDebito.value) || 0;
     const tarjetaAmexNum = Number(inputsInflables.tarjetaAmex.value) || 0;
   
-    // Total ventas es suma de boletos + calcetas + acompañantes
+    // Total ventas es suma de boletos + acompañantes
     const totalVentas =
       boleto15Total +
       boleto30Total +
       boleto1hrTotal +
       boletoAllDayTotal +
       personaExtra40Total +
-      personaExtra60Total +
-      calcetasTotal;
+      personaExtra60Total;
   
     const efectivoCalculado = totalVentas - (tarjetaCreditoNum + tarjetaDebitoNum + tarjetaAmexNum);
   
     // Global no incluye fondo
-    const globalTotal = totalVentas;
+    const globalTotal = totalVentas+calcetasTotal;
   
     const texto = 
   `*INFLABLES*
