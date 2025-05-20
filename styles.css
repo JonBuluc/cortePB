@@ -146,7 +146,7 @@ form {
 /* Bicis estilos */
 
 .seccionActiva #formBicis .grupo-inputs {
-  min-width: 140px;
+  min-width: 100px;
 }
 
 .seccionActiva #formBicis label {
