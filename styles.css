@@ -122,25 +122,28 @@ form {
 .fondo label {color: #e75183}
 
 .botones {
-  width: 100%;
+  width: 50
   margin-top: 1rem;
-  display: flex;
+  display: flex ;
   justify-content: space-between;
+  flex-direction: column;
 }
 
 .botones button {
+  flex: 1;
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: 8px;
   border: none;
   padding: 0.4rem 0.8rem;
   font-weight: bold;
-  background-color: #6200ee;
+  background-color: #4285F4;
   color: white;
   transition: background-color 0.3s ease;
+  margin-bottom: 0.3rem;
 }
 
 .botones button:hover {
-  background-color: #3700b3;
+  background-color: #244883;
 }
 
 /* Bicis estilos */

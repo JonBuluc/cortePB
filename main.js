@@ -1,3 +1,13 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+import { doc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+import { firebaseConfig } from './firebaseConfig.js';
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+export { db };
+
 const inputsInflables = {
     boleto15Inicial: document.getElementById('boleto15Inicial'),
     boleto15Final: document.getElementById('boleto15Final'),
@@ -53,15 +63,14 @@ const inputsInflables = {
     const inicioNum = Number(inicial);
     const finalNum = Number(final);
     if (
-      !inicial || !final || // si alguno está vacío
-      isNaN(inicioNum) || isNaN(finalNum) || // o no es número
-      finalNum < inicioNum // o final menor que inicial
+      inicial === '' || final === '' ||
+      isNaN(inicioNum) || isNaN(finalNum) ||
+      finalNum < inicioNum
     ) {
       return 0;
     }
     return finalNum - inicioNum + 1;
-  } 
-
+  }
   
   function actualizarTextoPlanoInflables() {
     const fechaHoy = new Date().toLocaleDateString('es-ES');
@@ -93,7 +102,6 @@ const inputsInflables = {
     const tarjetaDebitoNum = Number(inputsInflables.tarjetaDebito.value) || 0;
     const tarjetaAmexNum = Number(inputsInflables.tarjetaAmex.value) || 0;
   
-    // Total ventas es suma de boletos + acompañantes
     const totalVentas =
       boleto15Total +
       boleto30Total +
@@ -104,8 +112,9 @@ const inputsInflables = {
   
     const efectivoCalculado = totalVentas - (tarjetaCreditoNum + tarjetaDebitoNum + tarjetaAmexNum);
   
-    // Global no incluye fondo
-    const globalTotal = totalVentas+calcetasTotal;
+    const fondoNum = Number(inputsInflables.inputFondo.value) || 0;
+    const globalTotal = totalVentas + calcetasTotal;
+
   
     const texto = 
   `*INFLABLES*
@@ -114,44 +123,45 @@ const inputsInflables = {
   *BOLETO 15 min* $40
   Inicial: ${inputsInflables.boleto15Inicial.value || '---'}
   Final: ${inputsInflables.boleto15Final.value || '---'}
-  Boletos: ${boleto15Boletos || '0'}
-  Total: $${boleto15Total || '0'}
+  Boletos: ${boleto15Boletos}
+  Total: $${boleto15Total}
   
   *BOLETO 30 MIN* $70
   Inicial: ${inputsInflables.boleto30Inicial.value || '---'}
   Final: ${inputsInflables.boleto30Final.value || '---'}
-  Boletos: ${boleto30Boletos || '0'}
-  Total: $${boleto30Total || '0'}
+  Boletos: ${boleto30Boletos}
+  Total: $${boleto30Total}
   
   *BOLETO 1HR* $120
   Inicial: ${inputsInflables.boleto1hrInicial.value || '---'}
   Final: ${inputsInflables.boleto1hrFinal.value || '---'}
-  Boletos: ${boleto1hrBoletos || '0'}
-  Total: $${boleto1hrTotal || '0'}
+  Boletos: ${boleto1hrBoletos}
+  Total: $${boleto1hrTotal}
   
   *BOLETO ALLDAY* $250
   Inicial: ${inputsInflables.boletoAllDayInicial.value || '---'}
   Final: ${inputsInflables.boletoAllDayFinal.value || '---'}
-  Boletos: ${boletoAllDayBoletos || '0'}
-  Total: $${boletoAllDayTotal || '0'}
+  Boletos: ${boletoAllDayBoletos}
+  Total: $${boletoAllDayTotal}
   
   *PERSONA EXTRA* $40
   Inicial: ${inputsInflables.personaExtra40Inicial.value || '---'}
   Final: ${inputsInflables.personaExtra40Final.value || '---'}
-  Boletos: ${personaExtra40Boletos || '0'}
-  Total: $${personaExtra40Total || '0'}
+  Boletos: ${personaExtra40Boletos}
+  Total: $${personaExtra40Total}
   
   *PERSONA EXTRA* $60
   Inicial: ${inputsInflables.personaExtra60Inicial.value || '---'}
   Final: ${inputsInflables.personaExtra60Final.value || '---'}
-  Boletos: ${personaExtra60Boletos || '0'}
-  Total: $${personaExtra60Total || '0'}
+  Boletos: ${personaExtra60Boletos}
+  Total: $${personaExtra60Total}
   
   *Tarjeta*
   Crédito: $${tarjetaCreditoNum}
   Débito: $${tarjetaDebitoNum}
   Amex: $${tarjetaAmexNum}
   Total: $${tarjetaCreditoNum + tarjetaDebitoNum + tarjetaAmexNum}
+  
   *Efectivo:* $${efectivoCalculado}
   
   *Total venta:* $${totalVentas}
@@ -162,22 +172,63 @@ const inputsInflables = {
   *CALCETAS*
   Iniciamos: ${inputsInflables.calcetasInicial.value || '---'}
   Terminamos: ${inputsInflables.calcetasTerminamos.value || '---'}
-  Vendidas: ${calcetasVendidas || '0'}
-  Total: $${calcetasTotal || '0'}
+  Vendidas: ${calcetasVendidas}
+  Total: $${calcetasTotal}
   
-  *Fondo:* $${inputsInflables.inputFondo.value || '0'}
+  *Fondo:* $${fondoNum}
   `;
   
     textoPlanoInflables.textContent = texto;
+  
+    return {
+      fechaHoy,
+      fondo: fondoNum,
+      calcetasInicial: calcetasInicialNum,
+      calcetasFinal: calcetasTerminamosNum,
+      calcetasVendidas,
+      calcetasTotal,
+      tarjetaCreditoNum,
+      tarjetaDebitoNum,
+      tarjetaAmexNum,
+      totalTarjetas: tarjetaCreditoNum + tarjetaDebitoNum + tarjetaAmexNum,
+      efectivoCalculado,
+      totalVentas,
+      totalBoletos: boleto15Boletos + boleto30Boletos + boleto1hrBoletos + boletoAllDayBoletos + personaExtra40Boletos + personaExtra60Boletos,
+      boleto15Inicial: inputsInflables.boleto15Inicial.value,
+      boleto15Final: inputsInflables.boleto15Final.value,
+      boleto15Boletos,
+      boleto15Total,
+      boleto30Inicial: inputsInflables.boleto30Inicial.value,
+      boleto30Final: inputsInflables.boleto30Final.value,
+      boleto30Boletos,
+      boleto30Total,
+      boleto1hrInicial: inputsInflables.boleto1hrInicial.value,
+      boleto1hrFinal: inputsInflables.boleto1hrFinal.value,
+      boleto1hrBoletos,
+      boleto1hrTotal,
+      boletoAllDayInicial: inputsInflables.boletoAllDayInicial.value,
+      boletoAllDayFinal: inputsInflables.boletoAllDayFinal.value,
+      boletoAllDayBoletos,
+      boletoAllDayTotal,
+      personaExtra40Inicial: inputsInflables.personaExtra40Inicial.value,
+      personaExtra40Final: inputsInflables.personaExtra40Final.value,
+      personaExtra40Boletos,
+      personaExtra40Total,
+      personaExtra60Inicial: inputsInflables.personaExtra60Inicial.value,
+      personaExtra60Final: inputsInflables.personaExtra60Final.value,
+      personaExtra60Boletos,
+      personaExtra60Total,
+      globalTotal
+    };
   }
   
   function actualizarTextoPlanoBicis() {
     const fechaHoy = new Date().toLocaleDateString('es-ES');
-    const biciFolioInicialNum = Number(inputsBicis.biciFolioInicial.value);
-    const biciFolioFinalNum = Number(inputsBicis.biciFolioFinal.value);
+    const biciFolioInicialNum = inputsBicis.biciFolioInicial.value;
+    const biciFolioFinalNum = inputsBicis.biciFolioFinal.value;
     const biciPenalizacionNum = Number(inputsBicis.biciPenalizacion.value) || 0;
   
-    const totalBicis = calcularBoletos(biciFolioInicialNum, biciFolioFinalNum);    
+    const totalBicis = calcularBoletos(biciFolioInicialNum, biciFolioFinalNum) || 0;
   
     const texto = 
   `*Bi-Bikes*
@@ -187,7 +238,16 @@ const inputsInflables = {
   Penalización: ${biciPenalizacionNum}
   Total bicis: ${totalBicis}
   `;
+  
     textoPlanoBicis.textContent = texto;
+  
+    return {
+      fechaHoy,
+      biciFolioInicialNum,
+      biciFolioFinalNum,
+      biciPenalizacionNum,
+      totalBicis
+    };
   }
   
   function limpiarInflables() {
@@ -206,6 +266,79 @@ const inputsInflables = {
     });
   }
   
+// Función para guardar corte inflables
+async function guardarCorteInflables(usuarioId) {
+    const datos = actualizarTextoPlanoInflables();
+  
+    const corte = {
+      fecha: datos.fechaHoy,
+      fondo: inputsInflables.inputFondo.value || '0',
+      calcetas: {
+        inicial: inputsInflables.calcetasInicial.value || '0',
+        final: inputsInflables.calcetasTerminamos.value || '0',
+        vendidas: datos.calcetasVendidas,
+        total: datos.calcetasTotal
+      },
+      tarjetas: {
+        credito: datos.tarjetaCreditoNum,
+        debito: datos.tarjetaDebitoNum,
+        amex: datos.tarjetaAmexNum,
+        totalTarjetas: datos.tarjetaCreditoNum + datos.tarjetaDebitoNum + datos.tarjetaAmexNum
+      },
+      efectivo: datos.efectivoCalculado,
+      totalVentas: datos.totalVentas,
+      totalBoletos: datos.totalBoletos,
+      global: datos.globalTotal,
+      boletos: {
+        boleto15: { inicial: inputsInflables.boleto15Inicial.value || '0', final: inputsInflables.boleto15Final.value || '0', cantidad: datos.boleto15Boletos, total: datos.boleto15Total },
+        boleto30: { inicial: inputsInflables.boleto30Inicial.value || '0', final: inputsInflables.boleto30Final.value || '0', cantidad: datos.boleto30Boletos, total: datos.boleto30Total },
+        boleto1hr: { inicial: inputsInflables.boleto1hrInicial.value || '0', final: inputsInflables.boleto1hrFinal.value || '0', cantidad: datos.boleto1hrBoletos, total: datos.boleto1hrTotal },
+        boletoAllDay: { inicial: inputsInflables.boletoAllDayInicial.value || '0', final: inputsInflables.boletoAllDayFinal.value || '0', cantidad: datos.boletoAllDayBoletos, total: datos.boletoAllDayTotal },
+        personaExtra40: { inicial: inputsInflables.personaExtra40Inicial.value || '0', final: inputsInflables.personaExtra40Final.value || '0', cantidad: datos.personaExtra40Boletos, total: datos.personaExtra40Total },
+        personaExtra60: { inicial: inputsInflables.personaExtra60Inicial.value || '0', final: inputsInflables.personaExtra60Final.value || '0', cantidad: datos.personaExtra60Boletos, total: datos.personaExtra60Total }
+      }
+    };
+  
+    try {
+      const docRef = doc(db, "usuarios", usuarioId);
+      const fechaKey = new Date().toISOString().split("T")[0];
+      const areaRef = doc(docRef, "cortes", fechaKey);
+  
+      await setDoc(areaRef, { inflables: corte }, { merge: true });
+      alert("Corte de inflables guardado correctamente");
+    } catch (error) {
+      console.error("Error al guardar corte inflables:", error);
+    }
+  }
+  
+  // Función para guardar corte bicis
+  async function guardarCorteBicis(usuarioId) {
+    const datos = actualizarTextoPlanoBicis();
+  
+    const corte = {
+      fecha: datos.fechaHoy,
+      folioInicial: inputsBicis.biciFolioInicial.value || '0',
+      folioFinal: inputsBicis.biciFolioFinal.value || '0',
+      penalizacion: datos.biciPenalizacionNum,
+      totalBicis: datos.totalBicis
+    };
+  
+    try {
+      const docRef = doc(db, "usuarios", usuarioId);
+      const fechaKey = new Date().toISOString().split("T")[0];
+      const areaRef = doc(docRef, "cortes", fechaKey);
+  
+      await setDoc(areaRef, { bicis: corte }, { merge: true });
+      alert("Corte de bicis guardado correctamente");
+    } catch (error) {
+      console.error("Error al guardar corte bicis:", error);
+    }
+  }
+  
+  // Hardcodeamos usuarioId para pruebas, reemplaza por tu sistema de autenticación
+  const usuarioId = "idDelUsuarioAqui";
+  
+  // Eventos
   Object.values(inputsInflables).forEach(input => {
     input.addEventListener('input', actualizarTextoPlanoInflables);
   });
@@ -215,9 +348,10 @@ const inputsInflables = {
   });
   
   btnLimpiarInflables.addEventListener('click', limpiarInflables);
-  btnCopiarInflables.addEventListener('click', () => copiarTextoPlano(textoPlanoInflables.textContent));
-  
   btnLimpiarBicis.addEventListener('click', limpiarBicis);
+  
+  
+  btnCopiarInflables.addEventListener('click', () => copiarTextoPlano(textoPlanoInflables.textContent));
   btnCopiarBicis.addEventListener('click', () => copiarTextoPlano(textoPlanoBicis.textContent));
   
   btnMostrarInflables.addEventListener('click', () => {
@@ -238,7 +372,14 @@ const inputsInflables = {
     seccionInflables.classList.add('seccionOculta');
   });
   
+  document.getElementById("btnGuardarInflables").addEventListener("click", () => {
+    guardarCorteInflables(usuarioId);
+  });
+  
+  document.getElementById("btnGuardarBicis").addEventListener("click", () => {
+    guardarCorteBicis(usuarioId);
+  });
+  
   // Inicializar textos planos
   actualizarTextoPlanoInflables();
   actualizarTextoPlanoBicis();
-  
