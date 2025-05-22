@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
-import { doc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+import { doc, setDoc, getDoc, collection, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 import { firebaseConfig } from './firebaseConfig.js';
 
@@ -42,12 +42,16 @@ const inputsInflables = {
   const btnCopiarInflables = document.getElementById('btnCopiarInflables');
   const btnLimpiarBicis = document.getElementById('btnLimpiarBicis');
   const btnCopiarBicis = document.getElementById('btnCopiarBicis');
-  
-  const btnMostrarInflables = document.getElementById('btnMostrarInflables');
-  const btnMostrarBicis = document.getElementById('btnMostrarBicis');
-  
-  const seccionInflables = document.getElementById('seccionInflables');
-  const seccionBicis = document.getElementById('seccionBicis');
+
+  const btnMostrarInflables = document.getElementById("btnMostrarInflables");
+  const btnMostrarBicis = document.getElementById("btnMostrarBicis");
+  const btnMostrarAdmin = document.getElementById("btnMostrarAdmin");
+
+  function removerClaseActiveDeTodos() {
+  btnMostrarInflables.classList.remove("active");
+  btnMostrarBicis.classList.remove("active");
+  btnMostrarAdmin.classList.remove("active");
+}
   
   const textoPlanoInflables = document.getElementById('textoPlanoInflables');
   const textoPlanoBicis = document.getElementById('textoPlanoBicis');
@@ -64,29 +68,103 @@ const inputsInflables = {
 
 //funcion para tener un userid con google
 let usuarioID = null;
-
+let usuarioAutorizado = false;
+let usuarioRoles = {};
+let esAdmin = false;
 
 function loginConGoogle() {
   signInWithPopup(auth, provider)
     .then(result => {
       const user = result.user;
-      usuarioID = user.uid; // <-- AQUÍ GUARDAS EL UID
+      usuarioID = user.uid;
       console.log("Usuario logueado con Google:", usuarioID);
-      // Ya puedes usar usuarioID en tus funciones Firestore
     })
     .catch(error => {
       console.error("Error en login Google:", error.message);
     });
 }
 
-onAuthStateChanged(auth, user => {
+onAuthStateChanged(auth, async user => {
+  const contenedorLoginGoogle = document.querySelector(".login-google-contenedor");
+  const botonRegistrarseConGoogle = document.getElementById("btnRegistrarseConGoogle");
+
   if (user) {
-    usuarioID = user.uid; // <-- TAMBIÉN LO GUARDAS AQUÍ
+    usuarioID = user.uid;
     console.log("Usuario activo:", usuarioID);
+
+    try {
+      const documentoUsuario = await getDoc(doc(db, "usuariosAutorizados", usuarioID));
+
+      if (documentoUsuario.exists()) {
+        const datosUsuario = documentoUsuario.data();
+        console.log("Datos del usuario:", datosUsuario);
+
+        usuarioAutorizado = true;
+        esAdmin = datosUsuario.roles.esAdmin === true;
+        usuarioRoles = datosUsuario.roles || {};
+
+        console.log("✅ Usuario autorizado");
+
+        // Ocultar botones de login y registro para usuario autorizado
+        contenedorLoginGoogle.style.display = "none";
+        botonRegistrarseConGoogle.style.display = "none";
+
+        if (esAdmin) {
+          console.log("👑 Usuario es ADMIN");
+
+          // Mostrar botón Admin en el nav
+          document.getElementById("btnMostrarAdmin").style.display = "inline-block";
+
+          // Mostrar paneles admin
+          document.getElementById("panelAdmin").style.display = "none";
+          document.getElementById("panelAdminRoles").style.display = "none";
+
+          // Cargar datos admin
+          cargarUsuariosPendientes();
+          cargarRolesUsuarios();
+        } else {
+          // Ocultar paneles admin y botón del nav para usuarios no admin
+          document.getElementById("panelAdmin").style.display = "none";
+          document.getElementById("panelAdminRoles").style.display = "none";
+          document.getElementById("btnMostrarAdmin").style.display = "none";
+        }
+      } else {
+        console.warn("⛔ Usuario NO autorizado");
+        usuarioAutorizado = false;
+        esAdmin = false;
+        usuarioRoles = {};
+
+        // Mostrar botón de registrarse y ocultar login para usuarios pendientes
+        contenedorLoginGoogle.style.display = "none";
+        botonRegistrarseConGoogle.style.display = "inline-block";
+
+        document.getElementById("panelAdmin").style.display = "none";
+        document.getElementById("panelAdminRoles").style.display = "none";
+        document.getElementById("btnMostrarAdmin").style.display = "none";
+      }
+    } catch (error) {
+      console.error("❌ Error obteniendo datos del usuario:", error.message);
+    }
   } else {
+    usuarioID = null;
+    usuarioAutorizado = false;
+    esAdmin = false;
+    usuarioRoles = {};
+
     console.log("No hay usuario logueado");
+
+    // Mostrar botón login, ocultar registrarse y paneles
+    contenedorLoginGoogle.style.display = "block";
+    botonRegistrarseConGoogle.style.display = "none";
+
+    document.getElementById("panelAdmin").style.display = "none";
+    document.getElementById("panelAdminRoles").style.display = "none";
+    document.getElementById("btnMostrarAdmin").style.display = "none";
   }
 });
+
+
+
 
 function registrarseConGoogle() {
   signInWithPopup(auth, provider)
@@ -109,7 +187,150 @@ function registrarseConGoogle() {
     });
 }
 
+async function cargarUsuariosPendientes() {
+  const lista = document.getElementById("listaUsuariosPendientes");
+  lista.innerHTML = ""; // limpiar lista
+
+  const snapshot = await getDocs(collection(db, "usuariosPendientes"));
+
+  if (snapshot.empty) {
+    lista.innerHTML = "<li>No hay usuarios pendientes.</li>";
+    return;
+  }
+
+  snapshot.forEach(async docSnap => {
+    const datos = docSnap.data();
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <strong>${datos.nombre || "Sin nombre"}</strong> (${datos.correo || "Sin correo"})
+      <button onclick="autorizarUsuario('${docSnap.id}')">Autorizar</button>
+      <button onclick="rechazarUsuario('${docSnap.id}')">Eliminar</button>
+    `;
+    lista.appendChild(li);
+  });
+}
+
+async function autorizarUsuario(uid) {
+  const docPendiente = await getDoc(doc(db, "usuariosPendientes", uid));
+  if (!docPendiente.exists()) return;
+
+  const datos = docPendiente.data();
+
+  // Mover a usuariosAutorizados
+  await setDoc(doc(db, "usuariosAutorizados", uid), datos);
+
+  // Eliminar de usuariosPendientes
+  await deleteDoc(doc(db, "usuariosPendientes", uid));
+
+  alert("✅ Usuario autorizado");
+  cargarUsuariosPendientes();
+}
+
+async function rechazarUsuario(uid) {
+  await deleteDoc(doc(db, "usuariosPendientes", uid));
+  alert("❌ Usuario eliminado");
+  cargarUsuariosPendientes();
+}
+
+async function cargarRolesUsuarios() {
+  const lista = document.getElementById("listaRolesUsuarios");
+  lista.innerHTML = "Cargando...";
+
+  const snapshot = await getDocs(collection(db, "usuariosAutorizados"));
+  lista.innerHTML = "";
+
+  snapshot.forEach(docSnap => {
+    const data = docSnap.data();
+    const uid = docSnap.id;
+    const nombre = data.nombre || "(Sin nombre)";
+    const correo = data.correo || "(Sin correo)";
+    const roles = data.roles || {};
+
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <strong>${nombre}</strong> (${correo})<br>
+      ${generarControlesDePermiso(uid, roles)}
+      <hr>
+    `;
+    lista.appendChild(li);
+  });
+}
+
+function generarControlesDePermiso(uid, roles) {
+  const areas = ["bicis", "inflables"];
+  let html = "";
+  areas.forEach(area => {
+    const permiso = roles[area] || { leer: false, escribir: false };
+    html += `
+      <div style="margin-bottom: 0.5rem">
+        <strong>${area.toUpperCase()}</strong><br>
+        <label><input type="checkbox" onchange="cambiarPermiso('${uid}', '${area}', 'leer', this.checked)" ${permiso.leer ? "checked" : ""}> Leer</label>
+        <label><input type="checkbox" onchange="cambiarPermiso('${uid}', '${area}', 'escribir', this.checked)" ${permiso.escribir ? "checked" : ""}> Escribir</label>
+      </div>
+    `;
+  });
+  return html;
+}
+
+async function cambiarPermiso(uid, area, tipoPermiso, valor) {
+  if (esAdmin && uid === usuarioID) {
+    alert("No puedes cambiar tus propios permisos como administrador.");
+    cargarRolesUsuarios();
+    return;
+  }
+
+  const refUsuario = doc(db, "usuariosAutorizados", uid);
+  const docUsuario = await getDoc(refUsuario);
+  if (!docUsuario.exists()) return;
+
+  const data = docUsuario.data();
+  const roles = data.roles || {};
+  roles[area] = roles[area] || { leer: false, escribir: false };
+  roles[area][tipoPermiso] = valor;
+
+  await setDoc(refUsuario, {
+    ...data,
+    roles
+  });
+  alert("✅ Permisos actualizados para " + uid);
+}
+
+
+window.cargarRolesUsuarios = cargarRolesUsuarios;
+window.cambiarPermiso = cambiarPermiso;
+
+
+
+window.cargarUsuariosPendientes = cargarUsuariosPendientes;
+window.autorizarUsuario = autorizarUsuario;
+window.rechazarUsuario = rechazarUsuario;
+
 window.loginConGoogle = loginConGoogle;
+
+function puedeGuardarEnArea(nombreArea) {
+  if (!usuarioID) {
+    alert("⛔ Debes iniciar sesión para guardar.");
+    return false;
+  }
+
+  if (!usuarioAutorizado) {
+    alert("🕒 Tu cuenta está en revisión. Espera autorización del administrador.");
+    return false;
+  }
+
+  // Si es admin, siempre puede guardar
+  if (esAdmin) return true;
+
+  const permisosEnArea = usuarioRoles[nombreArea];
+  if (!permisosEnArea || !permisosEnArea.escribir) {
+    alert("⛔ No tienes permisos para guardar en esta área: " + nombreArea);
+    return false;
+  }
+
+  return true;
+}
+
+
 
   
   function calcularBoletos(inicial, final) {
@@ -388,6 +609,7 @@ async function guardarCorteInflables(usuarioId) {
     }
   }
   
+
   
   // Eventos
   Object.values(inputsInflables).forEach(input => {
@@ -405,31 +627,48 @@ async function guardarCorteInflables(usuarioId) {
   btnCopiarInflables.addEventListener('click', () => copiarTextoPlano(textoPlanoInflables.textContent));
   btnCopiarBicis.addEventListener('click', () => copiarTextoPlano(textoPlanoBicis.textContent));
   
-  btnMostrarInflables.addEventListener('click', () => {
-    btnMostrarInflables.classList.add('active');
-    btnMostrarBicis.classList.remove('active');
-    seccionInflables.classList.add('seccionActiva');
-    seccionInflables.classList.remove('seccionOculta');
-    seccionBicis.classList.remove('seccionActiva');
-    seccionBicis.classList.add('seccionOculta');
-  });
+btnMostrarInflables.addEventListener("click", () => {
+  document.getElementById("seccionInflables").style.display = "block";
+  document.getElementById("seccionBicis").style.display = "none";
+  document.getElementById("panelAdmin").style.display = "none";
+  document.getElementById("panelAdminRoles").style.display = "none";
+
+  removerClaseActiveDeTodos();
+  btnMostrarInflables.classList.add("active");
+});
+
+btnMostrarBicis.addEventListener("click", () => {
+  document.getElementById("seccionInflables").style.display = "none";
+  document.getElementById("seccionBicis").style.display = "block";
+  document.getElementById("panelAdmin").style.display = "none";
+  document.getElementById("panelAdminRoles").style.display = "none";
+
+  removerClaseActiveDeTodos();
+  btnMostrarBicis.classList.add("active");
+});
+
+btnMostrarAdmin.addEventListener("click", () => {
+  document.getElementById("seccionInflables").style.display = "none";
+  document.getElementById("seccionBicis").style.display = "none";
+  document.getElementById("panelAdmin").style.display = "block";
+  document.getElementById("panelAdminRoles").style.display = "block";
+
+  removerClaseActiveDeTodos();
+  btnMostrarAdmin.classList.add("active");
+});
+
   
-  btnMostrarBicis.addEventListener('click', () => {
-    btnMostrarBicis.classList.add('active');
-    btnMostrarInflables.classList.remove('active');
-    seccionBicis.classList.add('seccionActiva');
-    seccionBicis.classList.remove('seccionOculta');
-    seccionInflables.classList.remove('seccionActiva');
-    seccionInflables.classList.add('seccionOculta');
-  });
-  
-  document.getElementById("btnGuardarInflables").addEventListener("click", () => {
+document.getElementById("btnGuardarInflables").addEventListener("click", () => {
+  if (puedeGuardarEnArea("inflables")) {
     guardarCorteInflables(usuarioID);
-  });
-  
-  document.getElementById("btnGuardarBicis").addEventListener("click", () => {
+  }
+});
+
+document.getElementById("btnGuardarBicis").addEventListener("click", () => {
+  if (puedeGuardarEnArea("bicis")) {
     guardarCorteBicis(usuarioID);
-  });
+  }
+});
 
   document.getElementById("btnRegistrarseConGoogle").addEventListener("click", registrarseConGoogle);
 

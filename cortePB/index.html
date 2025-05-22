@@ -14,6 +14,7 @@
         <img src="logo.png" alt="Logo Corte PB" style="height: 50px;">
       </div>
     <nav>
+      <button id="btnMostrarAdmin" style="display: none;">Admin</button>
       <button id="btnMostrarInflables" class="active">Inflables</button>
       <button id="btnMostrarBicis">Bicis</button>
     </nav>
@@ -100,9 +101,6 @@
         <div class="texto-plano" id="textoPlanoBicis" aria-label="Resumen bicis"></div>
 
         <form id="formBicis">
-          <label><strong>Bi-Bikes</strong></label>
-          <p>18/05/25</p>
-
           <div class="grupo-inputs bici">
             <label>Folio inicial</label>
             <input type="number" id="biciFolioInicial" placeholder="Inicial" min="0" />
@@ -132,6 +130,19 @@
   <button class="login-google-boton" onclick="loginConGoogle()">Entrar con Google</button>
 </div>
 <button id="btnRegistrarseConGoogle">Registrarse</button>
+
+<div id="contenedorPanelesAdmin">
+  <section id="panelAdmin" class="seccionActiva">
+    <h2>Usuarios Pendientes</h2>
+    <ul id="listaUsuariosPendientes"></ul>
+  </section>
+  <div id="panelAdminRoles">
+    <h2>Gestión de Roles por Área</h2>
+    <ul id="listaRolesUsuarios"></ul>
+  </div>
+</div>
+
+
 
 </body>
 </html>
