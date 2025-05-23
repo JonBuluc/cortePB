@@ -87,7 +87,7 @@ onAuthStateChangedListener((user, estados) => {
   } else {
     console.log("No hay usuario logueado");
     contenedorLoginGoogle.style.display = "block";
-    botonRegistrarseConGoogle.style.display = "none";
+    botonRegistrarseConGoogle.style.display = "block";
     btnMostrarAdmin.style.display = "none";
     panelAdmin.style.display = "none";
     panelAdminRoles.style.display = "none";
